@@ -22,26 +22,26 @@ services:
       - postgres
       - rabbitmq
 
-  # auth:
-  #   container_name: auth
-  #   build:
-  #     context: ..
-  #     dockerfile: server/Dockerfile
-  #     target: dev
-  #   command: [sh, -c, "yarn start:dev auth"]
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8001:8001
-  #   networks:
-  #     - local
-  #   env_file:
-  #     - ../server/.env.dev
-  #   volumes:
-  #     - ../server:/app
-  #     - ../server/apps/auth/.env.dev:/app/apps/auth/.env.app
-  #   depends_on:
-  #     - postgres
-  #     - rabbitmq
+  auth:
+    container_name: auth
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: dev
+    command: [sh, -c, "yarn start:dev auth"]
+    restart: unless-stopped
+    ports:
+      - 8001:8001
+    networks:
+      - local
+    env_file:
+      - ../server/.env.dev
+    volumes:
+      - ../server:/app
+      - ../server/apps/auth/.env.dev:/app/apps/auth/.env.app
+    depends_on:
+      - postgres
+      - rabbitmq
 
   # alert:
   #   container_name: alert
