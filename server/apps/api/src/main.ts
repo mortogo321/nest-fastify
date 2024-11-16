@@ -29,7 +29,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
 
-  const queueName = process.env.AUTH_QUEUE;
+  const queueName = process.env.API_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(queueName, true));
   await app.startAllMicroservices();
