@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   getHello(): string {
-    return 'Hello World!';
+    const appName = process.env.APP_NAME;
+
+    return `Hello from ${appName}!`;
   }
 }
