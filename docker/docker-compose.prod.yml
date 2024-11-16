@@ -1,0 +1,100 @@
+name: nest-auth
+
+services:
+  api:
+    container_name: api
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: prod
+    command: ["node", "dist/apps/api/main"]
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    networks:
+      - local
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ../server:/app
+      - ../server/apps/api/.env.prod:/app/apps/api/.env.app
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  auth:
+    container_name: auth
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: prod
+    command: ["node", "dist/apps/auth/main"]
+    restart: unless-stopped
+    ports:
+      - 8001:8001
+    networks:
+      - local
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ../server:/app
+      - ../server/apps/auth/.env.prod:/app/apps/auth/.env.app
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  alert:
+    container_name: alert
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: prod
+    command: ["node", "dist/apps/auth/main"]
+    restart: unless-stopped
+    ports:
+      - 8002:8002
+    networks:
+      - local
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ../server:/app
+      - ../server/apps/alert/.env.prod:/app/apps/alert/.env.app
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  postgres:      
+    container_name: postgres
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    ports:  
+      - 5432:5432
+    networks:
+      - local
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - local
+    env_file:
+      - ../server/.env.dev
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+networks:
+  local:
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
