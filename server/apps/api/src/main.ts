@@ -1,4 +1,4 @@
-import { RmqService } from '@app/common';
+import { ResponseInterceptor, RmqService } from '@app/common';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { RmqOptions } from '@nestjs/microservices';
@@ -27,6 +27,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
 
   const queueName = process.env.AUTH_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
