@@ -52,7 +52,7 @@ export class AuthController {
       expires: addHours(new Date(), parseInt(process.env.JWT_EXPIRATION)),
     });
 
-    return jwtToken;
+    return response.send(jwtToken);
   }
 
   @ApiOperation({ summary: 'Sing out' })
@@ -61,7 +61,7 @@ export class AuthController {
     return this.authService.signOut(request, response);
   }
 
-  @ApiOperation({ summary: 'Secured get profile' })
+  @ApiOperation({ summary: 'Get profile' })
   @ApiBearerAuth()
   @Get('profile')
   getProfile(@Req() request: FastifyRequest) {

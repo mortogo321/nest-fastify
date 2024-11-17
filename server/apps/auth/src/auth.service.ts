@@ -7,6 +7,7 @@ import {
 } from '@app/common';
 import {
   BadRequestException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -69,6 +70,6 @@ export class AuthService {
   signOut(request: FastifyRequest, response: FastifyReply) {
     response.clearCookie(process.env.JWT_COOKIES);
 
-    return request.body;
+    return response.status(HttpStatus.NO_CONTENT).send();
   }
 }
