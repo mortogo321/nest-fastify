@@ -3,6 +3,7 @@ import {
   RmqService,
   UnauthorizedExceptionFilter,
 } from '@app/common';
+import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { RmqOptions } from '@nestjs/microservices';
@@ -28,6 +29,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, documentConfig);
 
   SwaggerModule.setup('docs', app, document);
+
+  await app.register(fastifyCookie, {
+    secret: process.env.JWT_SECRET,
+  });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));

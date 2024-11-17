@@ -1,6 +1,12 @@
-import { AuthenticatorService, DatabaseModule, RmqModule } from '@app/common';
+import {
+  AuthenticatorService,
+  DatabaseModule,
+  JwtGuard,
+  RmqModule,
+} from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
@@ -11,7 +17,7 @@ import { ApiService } from './api.service';
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/api/.env.app`,
     }),
-    RmqModule.register({ name: process.env.AUTH_QUEUE }),
+    RmqModule.register({ name: process.env.API_QUEUE }),
     DatabaseModule,
     JwtModule.register({
       global: true,
@@ -20,6 +26,13 @@ import { ApiService } from './api.service';
     }),
   ],
   controllers: [ApiController],
-  providers: [ApiService, AuthenticatorService],
+  providers: [
+    ApiService,
+    AuthenticatorService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+  ],
 })
 export class ApiModule {}
