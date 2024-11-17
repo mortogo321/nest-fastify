@@ -3,6 +3,6 @@ import { AuthenticatorService } from './authenticator.service';
 
 @Module({
   providers: [AuthenticatorService],
-  exports: [],
+  exports: [AuthenticatorService],
 })
 export class AuthenticatorModule {}

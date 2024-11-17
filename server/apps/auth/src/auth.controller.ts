@@ -1,5 +1,9 @@
-import { HttpBadRequestSchema, HttpResponseSchema } from '@app/common';
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import {
+  HttpBadRequestSchema,
+  HttpResponseSchema,
+  JwtGuard,
+} from '@app/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -9,7 +13,6 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { Request } from 'express';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
@@ -45,7 +48,18 @@ export class AuthController {
   }
 
   @Get('sign-out')
-  signOut(@Res() res: Request) {
-    return this.authService.signOut(res);
+  signOut(@Req() request: Request) {
+    return this.authService.signOut(request);
+  }
+
+  @ApiTags('Secured')
+  @ApiOperation({
+    summary: 'Get Profile',
+  })
+  @UseGuards(JwtGuard)
+  @Get('profile')
+  getProfile(@Req() request: Request) {
+    console.log(request);
+    return 'user'; //request.user;
   }
 }
