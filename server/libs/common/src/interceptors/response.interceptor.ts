@@ -68,7 +68,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
       this.reflector.get<string>(
         RESPONSE_MESSAGE_METADATA,
         context.getHandler(),
-      ) || 'success';
+      ) || 'Success';
 
     return {
       status: true,

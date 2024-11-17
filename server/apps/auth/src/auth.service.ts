@@ -11,6 +11,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { FastifyRequest } from 'fastify';
 import { AuthDto } from './auth.dto';
 
 @Injectable()
@@ -65,7 +66,7 @@ export class AuthService {
     return await this.authService.jwtSignAsync(payload);
   }
 
-  signOut(request: Request) {
+  signOut(request: FastifyRequest) {
     return request.body;
   }
 }

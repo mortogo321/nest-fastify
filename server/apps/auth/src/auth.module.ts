@@ -1,6 +1,12 @@
-import { AuthenticatorService, DatabaseModule, RmqModule } from '@app/common';
+import {
+  AuthenticatorService,
+  DatabaseModule,
+  JwtGuard,
+  RmqModule,
+} from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -20,6 +26,13 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthenticatorService],
+  providers: [
+    AuthService,
+    AuthenticatorService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+  ],
 })
 export class AuthModule {}

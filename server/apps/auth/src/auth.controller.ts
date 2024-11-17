@@ -1,11 +1,8 @@
-import {
-  HttpBadRequestSchema,
-  HttpResponseSchema,
-  JwtGuard,
-} from '@app/common';
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { HttpBadRequestSchema, HttpResponseSchema, Public } from '@app/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiOperation,
@@ -13,53 +10,54 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
+@ApiTags('Authentication')
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiTags('health')
+  @ApiOperation({ summary: 'Health' })
+  @Public()
   @Get()
-  @ApiOperation({
-    summary: 'Get Hello',
-  })
   getHello(): string {
     return this.authService.getHello();
   }
 
+  @ApiOperation({ summary: 'Sing up' })
   @ApiExtraModels(AuthDto)
   @ApiBody({ schema: { $ref: getSchemaPath(AuthDto) } })
   @ApiResponse(HttpResponseSchema)
   @ApiBadRequestResponse(HttpBadRequestSchema)
+  @Public()
   @Post('sign-up')
   async signUp(@Body() body: AuthDto) {
     return await this.authService.signUp(body);
   }
 
+  @ApiOperation({ summary: 'Sing in' })
   @ApiExtraModels(AuthDto)
   @ApiBody({ schema: { $ref: getSchemaPath(AuthDto) } })
   @ApiResponse(HttpResponseSchema)
   @ApiBadRequestResponse(HttpBadRequestSchema)
+  @Public()
   @Post('sign-in')
   async signIn(@Body() body: AuthDto) {
     return await this.authService.signIn(body);
   }
 
+  @ApiOperation({ summary: 'Sing out' })
   @Get('sign-out')
-  signOut(@Req() request: Request) {
+  signOut(@Req() request: FastifyRequest) {
     return this.authService.signOut(request);
   }
 
-  @ApiTags('Secured')
-  @ApiOperation({
-    summary: 'Get Profile',
-  })
-  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Secured get profile' })
+  @ApiBearerAuth()
   @Get('profile')
-  getProfile(@Req() request: Request) {
-    console.log(request);
-    return 'user'; //request.user;
+  getProfile(@Req() request: FastifyRequest) {
+    return (<any>request).user;
   }
 }

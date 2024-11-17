@@ -4,6 +4,7 @@ export * from './authenticator/guards/jwt.guard';
 export * from './database/database.module';
 export * from './database/prisma.service';
 export * from './decorators/response-message.decorator';
+export * from './decorators/response-public.decorator';
 export * from './entities/user';
 export * from './filters/unauthorized-exception.filter';
 export * from './interceptors/response.interceptor';
