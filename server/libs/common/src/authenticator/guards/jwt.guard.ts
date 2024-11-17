@@ -48,7 +48,7 @@ export class JwtGuard implements CanActivate {
 
   private extractTokenFromHeader(request: FastifyRequest): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    const cookieToken = request.cookies?.user_token ?? '';
+    const cookieToken = request.cookies?.[process.env.JWT_COOKIES] ?? '';
 
     if (cookieToken) {
       return cookieToken;

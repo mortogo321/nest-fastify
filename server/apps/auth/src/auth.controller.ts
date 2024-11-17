@@ -1,5 +1,5 @@
 import { HttpBadRequestSchema, HttpResponseSchema, Public } from '@app/common';
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -10,7 +10,8 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { FastifyRequest } from 'fastify';
+import { addHours } from 'date-fns';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
@@ -44,14 +45,20 @@ export class AuthController {
   @ApiBadRequestResponse(HttpBadRequestSchema)
   @Public()
   @Post('sign-in')
-  async signIn(@Body() body: AuthDto) {
-    return await this.authService.signIn(body);
+  async signIn(@Body() body: AuthDto, @Res() response: FastifyReply) {
+    const jwtToken = await this.authService.signIn(body);
+
+    response.setCookie(process.env.JWT_COOKIES, jwtToken.access_token, {
+      expires: addHours(new Date(), parseInt(process.env.JWT_EXPIRATION)),
+    });
+
+    return jwtToken;
   }
 
   @ApiOperation({ summary: 'Sing out' })
   @Get('sign-out')
-  signOut(@Req() request: FastifyRequest) {
-    return this.authService.signOut(request);
+  signOut(@Req() request: FastifyRequest, @Res() response: FastifyReply) {
+    return this.authService.signOut(request, response);
   }
 
   @ApiOperation({ summary: 'Secured get profile' })
