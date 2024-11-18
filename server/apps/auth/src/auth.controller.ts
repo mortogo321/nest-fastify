@@ -1,5 +1,13 @@
 import { HttpBadRequestSchema, HttpResponseSchema, Public } from '@app/common';
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -56,9 +64,12 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Sing out' })
+  @ApiBearerAuth()
   @Get('sign-out')
-  signOut(@Req() request: FastifyRequest, @Res() response: FastifyReply) {
-    return this.authService.signOut(request, response);
+  async signOut(@Req() request: FastifyRequest, @Res() response: FastifyReply) {
+    response.clearCookie(process.env.JWT_COOKIES);
+
+    return response.status(HttpStatus.NO_CONTENT).send();
   }
 
   @ApiOperation({ summary: 'Get profile' })
