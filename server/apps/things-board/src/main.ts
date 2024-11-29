@@ -12,11 +12,11 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AuthModule } from './auth.module';
+import { ThingsBoardModule } from './things-board.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
-    AuthModule,
+    ThingsBoardModule,
     new FastifyAdapter(),
   );
   const appName = process.env.APP_NAME;
@@ -41,7 +41,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
-  const queueName = process.env.AUTH_QUEUE;
+  const queueName = process.env.THINGS_BOARD_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(queueName, true));
   await app.startAllMicroservices();

@@ -8,16 +8,16 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { ApiController } from './api.controller';
-import { ApiService } from './api.service';
+import { AlertController } from './alert.controller';
+import { AlertService } from './alert.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `${process.cwd()}/apps/api/.env.app`,
+      envFilePath: `${process.cwd()}/apps/alert/.env.app`,
     }),
-    RmqModule.register({ name: process.env.API_QUEUE }),
+    RmqModule.register({ name: process.env.ALERT_QUEUE }),
     DatabaseModule,
     JwtModule.register({
       global: true,
@@ -26,13 +26,13 @@ import { ApiService } from './api.service';
     }),
     AuthenticatorModule,
   ],
-  controllers: [ApiController],
+  controllers: [AlertController],
   providers: [
-    ApiService,
+    AlertService,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
   ],
 })
-export class ApiModule {}
+export class AlertModule {}

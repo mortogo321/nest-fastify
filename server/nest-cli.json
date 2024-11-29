@@ -36,6 +36,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "things-board": {
+      "type": "application",
+      "root": "apps/things-board",
+      "entryFile": "main",
+      "sourceRoot": "apps/things-board/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/things-board/tsconfig.app.json"
+      }
+    },
+    "alert": {
+      "type": "application",
+      "root": "apps/alert",
+      "entryFile": "main",
+      "sourceRoot": "apps/alert/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/alert/tsconfig.app.json"
+      }
     }
   }
 }

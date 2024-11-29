@@ -1,5 +1,13 @@
 import { HttpBadRequestSchema, HttpResponseSchema, Public } from '@app/common';
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -12,8 +20,8 @@ import {
 } from '@nestjs/swagger';
 import { addHours } from 'date-fns';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
+import { AuthDto } from './dtos/auth.dto';
 
 @ApiTags('Authentication')
 @Controller()
@@ -57,8 +65,10 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Sing out' })
   @Get('sign-out')
-  signOut(@Req() request: FastifyRequest, @Res() response: FastifyReply) {
-    return this.authService.signOut(request, response);
+  signOut(@Res() response: FastifyReply) {
+    response.clearCookie(process.env.JWT_COOKIES);
+
+    return response.status(HttpStatus.NO_CONTENT).send();
   }
 
   @ApiOperation({ summary: 'Get profile' })

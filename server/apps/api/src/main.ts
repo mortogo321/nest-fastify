@@ -20,11 +20,13 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   const appName = process.env.APP_NAME;
+  const appUrl = process.env.APP_URL;
   const documentConfig = new DocumentBuilder()
     .setTitle(`${appName} Service`)
     .setDescription(`${appName} Service API description`)
     .setVersion('1.0')
     .addTag(appName)
+    .addServer(appUrl)
     .build();
   const document = SwaggerModule.createDocument(app, documentConfig);
 

@@ -1,5 +1,5 @@
 import {
-  AuthenticatorService,
+  AuthenticatorModule,
   DatabaseModule,
   JwtGuard,
   RmqModule,
@@ -10,6 +10,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { GoogleController } from './google/google.controller';
+import { FacebookController } from './facebook/facebook.controller';
 
 @Module({
   imports: [
@@ -24,11 +26,11 @@ import { AuthService } from './auth.service';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
+    AuthenticatorModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, GoogleController, FacebookController],
   providers: [
     AuthService,
-    AuthenticatorService,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,

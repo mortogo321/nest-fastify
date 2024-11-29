@@ -1,15 +1,26 @@
-# NestJS Fastify Microservices
+# NestJs - Fastify
 - NestJS + Fastify
 - PostgeSQL
 - RabbitMQ
 
 ## Required
+- Yarn: https://classic.yarnpkg.com/lang/en/docs/install
 - NetsJS CLI: https://docs.nestjs.com/cli/overview  
 - dotenvx: https://github.com/dotenvx/dotenvx
 
 ```bash
 yarn global add @nestjs/cli
 yarn global add @dotenvx/dotenvx
+```
+
+## Dockerize
+```bash
+cd weaverboard-api
+# up
+docker compose -f "docker/docker-compose.dev.yml" up -d --build
+
+# down
+docker compose -f "docker/docker-compose.dev.yml" down --rmi all --remove-orphans
 ```
 
 ## Scripts
@@ -28,6 +39,7 @@ Service: `apps/{service-name}/.env.{dev | prod}`
 api - http://localhost:8000  
 auth - http://localhost:8001  
 alert - http://localhost:8002  
+things-board - http://localhost:8003  
 
 ## Management Tools
 RabbitMQ: http://localhost:15672  

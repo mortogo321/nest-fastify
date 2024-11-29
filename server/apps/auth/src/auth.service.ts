@@ -7,13 +7,11 @@ import {
 } from '@app/common';
 import {
   BadRequestException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthDto } from './auth.dto';
+import { AuthDto } from './dtos/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -65,11 +63,5 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
 
     return await this.authService.jwtSignAsync(payload);
-  }
-
-  signOut(request: FastifyRequest, response: FastifyReply) {
-    response.clearCookie(process.env.JWT_COOKIES);
-
-    return response.status(HttpStatus.NO_CONTENT).send();
   }
 }

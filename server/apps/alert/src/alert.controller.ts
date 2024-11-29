@@ -2,18 +2,18 @@ import { Public } from '@app/common';
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
-import { ApiService } from './api.service';
+import { AlertService } from './alert.service';
 
-@ApiTags('API Gateway')
+@ApiTags('Alert')
 @Controller()
-export class ApiController {
-  constructor(private readonly apiService: ApiService) {}
+export class AlertController {
+  constructor(private readonly alertService: AlertService) {}
 
   @ApiOperation({ summary: 'Health' })
   @Public()
   @Get()
   getHello(): string {
-    return this.apiService.getHello();
+    return this.alertService.getHello();
   }
 
   @ApiOperation({ summary: 'Get profile' })
