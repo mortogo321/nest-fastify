@@ -22,6 +22,8 @@ WORKDIR /app
 
 RUN yarn prisma:dev generate
 
+ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.dev.sh" ]
+
 CMD [ "" ]
 
 # production
@@ -32,6 +34,6 @@ WORKDIR /app
 RUN yarn prisma:prod generate
 RUN yarn build
 
-ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.prod.sh" ]
 
 CMD [ "" ]
