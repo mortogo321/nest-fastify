@@ -1,7 +1,5 @@
-ARG IMAGE=node:alpine
-
 # base
-FROM ${IMAGE} AS base
+FROM node:alpine AS base
 
 RUN yarn global add @nestjs/cli
 RUN yarn global add @dotenvx/dotenvx
