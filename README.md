@@ -34,7 +34,7 @@ docker compose -f "docker/compose.dev.yml" down --rmi all --remove-orphans
 # prisma command
 yarn prisma:dev generate
 yarn prisma:dev migrate dev --name init
-yarn prisma:dev db push
+yarn prisma:dev migrate dev
 ```
 
 ## Environment Variables
