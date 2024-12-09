@@ -49,7 +49,7 @@ services:
         condition: service_healthy
 
   alert:
-    container_name: laert
+    container_name: alert
     build:
       context: ..
       dockerfile: server/Dockerfile

@@ -15,12 +15,11 @@ yarn global add @dotenvx/dotenvx
 
 ## Dockerize
 ```bash
-cd weaverboard-api
 # up
-docker compose -f "docker/docker-compose.dev.yml" up -d --build
+docker compose -f "docker/compose.dev.yml" up -d --build
 
 # down
-docker compose -f "docker/docker-compose.dev.yml" down --rmi all --remove-orphans
+docker compose -f "docker/compose.dev.yml" down --rmi all --remove-orphans
 ```
 
 ## Scripts
