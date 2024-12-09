@@ -1,4 +1,4 @@
-# NestJs - Fastify
+# NestJS - Fastify
 - NestJS + Fastify
 - PostgeSQL
 - RabbitMQ
@@ -11,6 +11,13 @@
 ```bash
 yarn global add @nestjs/cli
 yarn global add @dotenvx/dotenvx
+```
+
+## Development
+```bash
+git clone https://github.com/mortogo321/nest-fastify.git
+cd nest-fastify
+yarn
 ```
 
 ## Dockerize
@@ -38,7 +45,7 @@ Service: `apps/{service-name}/.env.{dev | prod}`
 api - http://localhost:8000  
 auth - http://localhost:8001  
 alert - http://localhost:8002  
-things-board - http://localhost:8003  
+payment - http://localhost:8003  
 
 ## Management Tools
 RabbitMQ: http://localhost:15672  

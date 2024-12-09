@@ -8,16 +8,16 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { ThingsBoardController } from './things-board.controller';
-import { ThingsBoardService } from './things-board.service';
+import { PaymentController } from './payment.controller';
+import { PaymentService } from './payment.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `${process.cwd()}/apps/things-board/.env.app`,
+      envFilePath: `${process.cwd()}/apps/payment/.env.app`,
     }),
-    RmqModule.register({ name: process.env.THINGS_BOARD_QUEUE }),
+    RmqModule.register({ name: process.env.PAYMENT_QUEUE }),
     DatabaseModule,
     JwtModule.register({
       global: true,
@@ -26,13 +26,13 @@ import { ThingsBoardService } from './things-board.service';
     }),
     AuthenticatorModule,
   ],
-  controllers: [ThingsBoardController],
+  controllers: [PaymentController],
   providers: [
-    ThingsBoardService,
+    PaymentService,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
   ],
 })
-export class ThingsBoardModule {}
+export class PaymentModule {}

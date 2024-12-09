@@ -1,15 +1,15 @@
 import {
-  ResponseInterceptor,
-  RmqService,
-  UnauthorizedExceptionFilter,
+    ResponseInterceptor,
+    RmqService,
+    UnauthorizedExceptionFilter,
 } from '@app/common';
 import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { RmqOptions } from '@nestjs/microservices';
 import {
-  FastifyAdapter,
-  NestFastifyApplication,
+    FastifyAdapter,
+    NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AlertModule } from './alert.module';

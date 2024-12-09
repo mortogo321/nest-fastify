@@ -2,18 +2,18 @@ import { Public } from '@app/common';
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
-import { ThingsBoardService } from './things-board.service';
+import { PaymentService } from './payment.service';
 
-@ApiTags('ThingsBoard')
+@ApiTags('Payment')
 @Controller()
-export class ThingsBoardController {
-  constructor(private readonly thingsBoardService: ThingsBoardService) {}
+export class PaymentController {
+  constructor(private readonly paymentService: PaymentService) {}
 
   @ApiOperation({ summary: 'Health' })
   @Public()
   @Get()
   getHello(): string {
-    return this.thingsBoardService.getHello();
+    return this.paymentService.getHello();
   }
 
   @ApiOperation({ summary: 'Get profile' })

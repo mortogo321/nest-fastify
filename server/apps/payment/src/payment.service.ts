@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ThingsBoardService {
+export class PaymentService {
   getHello(): string {
     const appName = process.env.APP_NAME;
 

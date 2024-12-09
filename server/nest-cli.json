@@ -28,6 +28,15 @@
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
+    "alert": {
+      "type": "application",
+      "root": "apps/alert",
+      "entryFile": "main",
+      "sourceRoot": "apps/alert/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/alert/tsconfig.app.json"
+      }
+    },
     "common": {
       "type": "library",
       "root": "libs/common",
@@ -37,22 +46,13 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "things-board": {
+    "payment": {
       "type": "application",
-      "root": "apps/things-board",
+      "root": "apps/payment",
       "entryFile": "main",
-      "sourceRoot": "apps/things-board/src",
+      "sourceRoot": "apps/payment/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/things-board/tsconfig.app.json"
-      }
-    },
-    "alert": {
-      "type": "application",
-      "root": "apps/alert",
-      "entryFile": "main",
-      "sourceRoot": "apps/alert/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/alert/tsconfig.app.json"
+        "tsConfigPath": "apps/payment/tsconfig.app.json"
       }
     }
   }

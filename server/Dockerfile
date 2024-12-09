@@ -1,6 +1,8 @@
 # base
 FROM node:alpine AS base
 
+RUN apk add --no-cache libc6-compat
+
 RUN yarn global add @nestjs/cli
 RUN yarn global add @dotenvx/dotenvx
 
