@@ -28,6 +28,7 @@ FROM builder AS prod
 WORKDIR /app
 
 RUN yarn prisma:prod generate
+RUN yarn build
 
 ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.sh" ]
 
