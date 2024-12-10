@@ -16,6 +16,7 @@ import { PaymentService } from './payment.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/payment/.env.app`,
+      expandVariables: true,
     }),
     RmqModule.register({ name: process.env.PAYMENT_QUEUE }),
     DatabaseModule,

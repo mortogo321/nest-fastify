@@ -1,7 +1,7 @@
 # base
 FROM node:alpine AS base
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 
 RUN yarn global add @nestjs/cli
 RUN yarn global add @dotenvx/dotenvx
@@ -11,16 +11,10 @@ FROM base AS builder
 
 WORKDIR /app
 
-COPY ../server .
-
-RUN yarn
-
 # development
 FROM builder AS dev
 
 WORKDIR /app
-
-RUN yarn prisma:dev generate
 
 ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.dev.sh" ]
 
@@ -31,7 +25,8 @@ FROM builder AS prod
 
 WORKDIR /app
 
-RUN yarn prisma:prod generate
+COPY ../server .
+RUN yarn
 
 ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.prod.sh" ]
 

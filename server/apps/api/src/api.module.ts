@@ -17,6 +17,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/api/.env.app`,
+      expandVariables: true,
     }),
     RmqModule.register({ name: process.env.API_QUEUE }),
     DatabaseModule,

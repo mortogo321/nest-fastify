@@ -1,4 +1,4 @@
-name: wct-pay
+name: nest-app
 
 services:
   api:

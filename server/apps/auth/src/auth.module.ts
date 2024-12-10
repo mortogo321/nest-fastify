@@ -10,14 +10,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { GoogleController } from './google/google.controller';
 import { FacebookController } from './facebook/facebook.controller';
+import { GoogleController } from './google/google.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/auth/.env.app`,
+      expandVariables: true,
     }),
     RmqModule.register({ name: process.env.AUTH_QUEUE }),
     DatabaseModule,

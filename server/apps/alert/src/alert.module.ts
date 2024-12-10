@@ -16,6 +16,7 @@ import { AlertService } from './alert.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/alert/.env.app`,
+      expandVariables: true,
     }),
     RmqModule.register({ name: process.env.ALERT_QUEUE }),
     DatabaseModule,
