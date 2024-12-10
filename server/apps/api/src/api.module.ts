@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ApiService } from './api.service';
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
     AuthenticatorModule,
+    UserModule,
   ],
   controllers: [ApiController],
   providers: [
