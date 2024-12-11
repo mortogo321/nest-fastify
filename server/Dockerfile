@@ -26,6 +26,7 @@ FROM builder AS prod
 WORKDIR /app
 
 COPY ../server .
+
 RUN yarn
 
 ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.prod.sh" ]
