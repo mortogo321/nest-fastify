@@ -1,5 +1,5 @@
 model User {
-    id             String   @unique @default(cuid())
+    id             String   @unique @default(uuid())
     email          String   @unique
     hashedPassword String
     createdAt      DateTime @default(now())
