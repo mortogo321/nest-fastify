@@ -61,11 +61,51 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  postgres:      
+  payment:
+    container_name: payment
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: prod
+    command: ["sh", "-c", "yarn build payment && node dist/apps/payment/main"]
+    restart: unless-stopped
+    ports:
+      - 8002:8002
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ../server/apps/payment/.env.prod:/app/apps/payment/.env.app
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  worker:
+    container_name: worker
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+      target: prod
+    command: ["sh", "-c", "yarn build worker && node dist/apps/worker/main"]
+    restart: unless-stopped
+    ports:
+      - 8002:8002
+    env_file:
+      - ../server/.env.prod
+    volumes:
+      - ../server/apps/worker/.env.prod:/app/apps/worker/.env.app
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  postgres:
     container_name: postgres
     image: postgres:16.4-alpine
     restart: unless-stopped
-    ports:  
+    ports:
       - 5432:5432
     env_file:
       - ../server/.env.prod
