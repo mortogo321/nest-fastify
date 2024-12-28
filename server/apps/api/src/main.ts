@@ -17,7 +17,7 @@ import { ApiModule } from './api.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     ApiModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
   const appName = process.env.APP_NAME;
   const appUrl = process.env.APP_URL;

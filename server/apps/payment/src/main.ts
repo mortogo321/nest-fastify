@@ -1,15 +1,15 @@
 import {
-  ResponseInterceptor,
-  RmqService,
-  UnauthorizedExceptionFilter,
+    ResponseInterceptor,
+    RmqService,
+    UnauthorizedExceptionFilter,
 } from '@app/common';
 import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { RmqOptions } from '@nestjs/microservices';
 import {
-  FastifyAdapter,
-  NestFastifyApplication,
+    FastifyAdapter,
+    NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PaymentModule } from './payment.module';
@@ -17,7 +17,7 @@ import { PaymentModule } from './payment.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     PaymentModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
   const appName = process.env.APP_NAME;
   const appUrl = process.env.APP_URL;
