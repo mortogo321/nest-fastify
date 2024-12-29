@@ -1,5 +1,6 @@
 import {
   ResponseInterceptor,
+  ResponseMiddleware,
   RmqService,
   UnauthorizedExceptionFilter,
 } from '@app/common';
@@ -40,6 +41,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
+  
+  app.use(ResponseMiddleware);
 
   const queueName = process.env.API_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);

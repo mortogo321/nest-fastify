@@ -5,6 +5,7 @@ export * from './enums/';
 export * from './filters/';
 export * from './interceptors/';
 export * from './logger/';
+export * from './middlewares/';
 export * from './rmq/';
 export * from './schemas/';
 export * from './utils/';

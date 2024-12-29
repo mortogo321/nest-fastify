@@ -1,15 +1,16 @@
 import {
-    ResponseInterceptor,
-    RmqService,
-    UnauthorizedExceptionFilter,
+  ResponseInterceptor,
+  ResponseMiddleware,
+  RmqService,
+  UnauthorizedExceptionFilter,
 } from '@app/common';
 import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { RmqOptions } from '@nestjs/microservices';
 import {
-    FastifyAdapter,
-    NestFastifyApplication,
+  FastifyAdapter,
+  NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from './auth.module';
@@ -40,6 +41,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
+
+  app.use(ResponseMiddleware);
 
   const queueName = process.env.AUTH_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);

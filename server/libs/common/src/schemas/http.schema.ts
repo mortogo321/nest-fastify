@@ -8,6 +8,7 @@ const response = {
     type: 'string',
     example: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
   },
+  duration: { type: 'string', example: '0 ms' },
   message: { type: 'string', example: 'success' },
   data: { type: 'object' },
 };
