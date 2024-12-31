@@ -22,16 +22,19 @@ async function bootstrap() {
   );
   const appName = process.env.APP_NAME;
   const appUrl = process.env.APP_URL;
-  const documentConfig = new DocumentBuilder()
-    .setTitle(`${appName} Service`)
-    .setDescription(`${appName} Service API description`)
-    .setVersion('1.0')
-    .addTag(appName)
-    .addServer(appUrl)
-    .build();
-  const document = SwaggerModule.createDocument(app, documentConfig);
 
-  SwaggerModule.setup('docs', app, document);
+  if (process.env.NODE_ENV !== 'production') {
+    const documentConfig = new DocumentBuilder()
+      .setTitle(`${appName} Service`)
+      .setDescription(`${appName} Service API description`)
+      .setVersion('1.0')
+      .addTag(appName)
+      .addServer(appUrl)
+      .build();
+    const document = SwaggerModule.createDocument(app, documentConfig);
+
+    SwaggerModule.setup('docs', app, document);
+  }
 
   await app.register(fastifyCookie, {
     secret: process.env.JWT_SECRET,
@@ -43,7 +46,7 @@ async function bootstrap() {
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
   app.use(ResponseMiddleware);
-  
+
   const queueName = process.env.ALERT_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(queueName, true));
