@@ -85,7 +85,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
-  app.use(ResponseMiddleware);
+  app.use(new ResponseMiddleware());
 
   const queueName = process.env.API_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
@@ -95,7 +95,6 @@ async function bootstrap() {
   const port = process.env.PORT;
   await app.listen(port, '0.0.0.0');
 
-  console.log(`${appName} is running on ${port}`);
   console.log(`queue name is ${queueName}`);
 }
 bootstrap();
