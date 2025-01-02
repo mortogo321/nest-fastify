@@ -1,7 +1,8 @@
 # base
 FROM node:alpine AS base
 
-RUN apk add --no-cache libc6-compat openssl
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
 RUN yarn global add @nestjs/cli
 RUN yarn global add @dotenvx/dotenvx
@@ -16,7 +17,7 @@ FROM builder AS dev
 
 WORKDIR /app
 
-ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.dev.sh" ]
+ENTRYPOINT [ "sh", "scripts/docker-entrypoint.dev.sh" ]
 
 CMD [ "" ]
 
@@ -29,6 +30,6 @@ COPY ../server .
 
 RUN yarn
 
-ENTRYPOINT [ "/bin/sh", "scripts/docker-entrypoint.prod.sh" ]
+ENTRYPOINT [ "sh", "scripts/docker-entrypoint.prod.sh" ]
 
 CMD [ "" ]

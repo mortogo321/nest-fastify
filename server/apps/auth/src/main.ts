@@ -1,5 +1,6 @@
 import {
   ResponseInterceptor,
+  ResponseMiddleware,
   RmqService,
   UnauthorizedExceptionFilter,
 } from '@app/common';
@@ -17,20 +18,23 @@ import { AuthModule } from './auth.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AuthModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
   const appName = process.env.APP_NAME;
   const appUrl = process.env.APP_URL;
-  const documentConfig = new DocumentBuilder()
-    .setTitle(`${appName} Service`)
-    .setDescription(`${appName} Service API description`)
-    .setVersion('1.0')
-    .addTag(appName)
-    .addServer(appUrl)
-    .build();
-  const document = SwaggerModule.createDocument(app, documentConfig);
 
-  SwaggerModule.setup('docs', app, document);
+  if (process.env.NODE_ENV !== 'production') {
+    const documentConfig = new DocumentBuilder()
+      .setTitle(`${appName} Service`)
+      .setDescription(`${appName} Service API description`)
+      .setVersion('1.0')
+      .addTag(appName)
+      .addServer(appUrl)
+      .build();
+    const document = SwaggerModule.createDocument(app, documentConfig);
+
+    SwaggerModule.setup('docs', app, document);
+  }
 
   await app.register(fastifyCookie, {
     secret: process.env.JWT_SECRET,
@@ -40,6 +44,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
+
+  app.use(ResponseMiddleware);
 
   const queueName = process.env.AUTH_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);

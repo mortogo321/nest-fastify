@@ -10,15 +10,16 @@ import { Reflector } from '@nestjs/core';
 import { format } from 'date-fns';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { RESPONSE_MESSAGE_METADATA } from '../';
+import { RESPONSE_MESSAGE_METADATA } from '../decorators';
 
 export type Response<T> = {
   status: boolean;
   statusCode: number;
   path: string;
+  timestamp: string;
+  duration: string;
   message: string;
   data: T;
-  timestamp: string;
 };
 
 @Injectable()
@@ -52,6 +53,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
       statusCode: status,
       path: request.url,
       timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
+      duration: `${response.headers?.duration || 0} ms`,
       message: exceptionResponse?.error,
       errors: exceptionResponse?.message,
     });
@@ -75,6 +77,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
       statusCode,
       path: request.url,
       timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
+      duration: `${response.headers?.duration || 0} ms`,
       message: message,
       data: res,
     };

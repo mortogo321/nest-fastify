@@ -4,6 +4,7 @@
 - RabbitMQ
 
 ## Required
+- Node LTS: https://nodejs.org/en/download
 - Yarn: https://classic.yarnpkg.com/lang/en/docs/install
 - NetsJS CLI: https://docs.nestjs.com/cli/overview  
 - dotenvx: https://github.com/dotenvx/dotenvx
