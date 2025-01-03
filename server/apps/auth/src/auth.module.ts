@@ -2,12 +2,15 @@ import {
   AuthenticatorModule,
   DatabaseModule,
   JwtGuard,
+  LoggerMiddleware,
   RmqModule,
+  winstonConfig,
 } from '@app/common';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { WinstonModule } from 'nest-winston';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { FacebookController } from './facebook/facebook.controller';
@@ -20,6 +23,7 @@ import { GoogleController } from './google/google.controller';
       envFilePath: `${process.cwd()}/apps/auth/.env.app`,
       expandVariables: true,
     }),
+    WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
     RmqModule.register({ name: process.env.AUTH_QUEUE }),
     DatabaseModule,
     JwtModule.register({
@@ -38,4 +42,8 @@ import { GoogleController } from './google/google.controller';
     },
   ],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

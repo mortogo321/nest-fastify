@@ -18,7 +18,7 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
       status: false,
       statusCode: status,
       path: request.url,
-      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
+      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss xxx'),
       message: 'Unauthorized',
     });
   }

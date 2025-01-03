@@ -2,12 +2,15 @@ import {
   AuthenticatorModule,
   DatabaseModule,
   JwtGuard,
+  LoggerMiddleware,
   RmqModule,
+  winstonConfig,
 } from '@app/common';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { WinstonModule } from 'nest-winston';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { UserModule } from './user/user.module';
@@ -19,6 +22,7 @@ import { UserModule } from './user/user.module';
       envFilePath: `${process.cwd()}/apps/api/.env.app`,
       expandVariables: true,
     }),
+    WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
     RmqModule.register({ name: process.env.API_QUEUE }),
     DatabaseModule,
     JwtModule.register({
@@ -38,4 +42,8 @@ import { UserModule } from './user/user.module';
     },
   ],
 })
-export class ApiModule {}
+export class ApiModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

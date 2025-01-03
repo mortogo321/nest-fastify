@@ -1,1 +1,1 @@
-export * from './response.middleware';
+export * from './logger.middleware';

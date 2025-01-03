@@ -17,7 +17,6 @@ export type Response<T> = {
   statusCode: number;
   path: string;
   timestamp: string;
-  duration: string;
   message: string;
   data: T;
 };
@@ -52,8 +51,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
       status: false,
       statusCode: status,
       path: request.url,
-      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
-      duration: `${response.headers?.duration || 0} ms`,
+      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss xxx'),
       message: exceptionResponse?.error,
       errors: exceptionResponse?.message,
     });
@@ -76,8 +74,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
       status: true,
       statusCode,
       path: request.url,
-      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss OOOO'),
-      duration: `${response.headers?.duration || 0} ms`,
+      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss xxx'),
       message: message,
       data: res,
     };

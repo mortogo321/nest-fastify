@@ -2,12 +2,15 @@ import {
   AuthenticatorModule,
   DatabaseModule,
   JwtGuard,
+  LoggerMiddleware,
   RmqModule,
+  winstonConfig,
 } from '@app/common';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { WinstonModule } from 'nest-winston';
 import { AlertController } from './alert.controller';
 import { AlertService } from './alert.service';
 
@@ -18,6 +21,7 @@ import { AlertService } from './alert.service';
       envFilePath: `${process.cwd()}/apps/alert/.env.app`,
       expandVariables: true,
     }),
+    WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
     RmqModule.register({ name: process.env.ALERT_QUEUE }),
     DatabaseModule,
     JwtModule.register({
@@ -36,4 +40,8 @@ import { AlertService } from './alert.service';
     },
   ],
 })
-export class AlertModule {}
+export class AlertModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

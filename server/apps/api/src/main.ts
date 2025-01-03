@@ -1,6 +1,5 @@
 import {
   ResponseInterceptor,
-  ResponseMiddleware,
   RmqService,
   UnauthorizedExceptionFilter,
 } from '@app/common';
@@ -12,68 +11,29 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
-import { AlertModule } from 'apps/alert/src/alert.module';
-import { AuthModule } from 'apps/auth/src/auth.module';
-import { PaymentModule } from 'apps/payment/src/payment.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ApiModule } from './api.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    ApiModule,
-    new FastifyAdapter({ logger: true }),
-  );
   const appName = process.env.APP_NAME;
   const appUrl = process.env.APP_URL;
+  const app = await NestFactory.create<NestFastifyApplication>(
+    ApiModule,
+    new FastifyAdapter(),
+  );
 
   if (process.env.NODE_ENV !== 'production') {
-    // auth service
-    let docName = 'Authentication';
-    let documentConfig = new DocumentBuilder()
-      .setTitle(`${docName} Service`)
-      .setDescription(`${docName} Service API description`)
+    const documentConfig = new DocumentBuilder()
+      .setTitle(`${appName} Service`)
+      .setDescription(`${appName} Service API description`)
       .setVersion('1.0')
-      .addTag(docName)
+      .addTag(appName)
+      .addServer(appUrl)
       .build();
-    let documentFactory = (): OpenAPIObject => {
-      return SwaggerModule.createDocument(app, documentConfig, {
-        include: [AuthModule],
-      });
-    };
+    const document = SwaggerModule.createDocument(app, documentConfig);
 
-    SwaggerModule.setup('docs/auth', app, documentFactory);
-
-    // alert service
-    docName = 'Alert';
-    documentConfig = new DocumentBuilder()
-      .setTitle(`${docName} Service`)
-      .setDescription(`${docName} Service API description`)
-      .setVersion('1.0')
-      .addTag(docName)
-      .build();
-    documentFactory = (): OpenAPIObject => {
-      return SwaggerModule.createDocument(app, documentConfig, {
-        include: [AlertModule],
-      });
-    };
-
-    SwaggerModule.setup('docs/alert', app, documentFactory);
-
-    // payment service
-    docName = 'Payment';
-    documentConfig = new DocumentBuilder()
-      .setTitle(`${docName} Service`)
-      .setDescription(`${docName} Service API description`)
-      .setVersion('1.0')
-      .addTag(docName)
-      .build();
-    documentFactory = (): OpenAPIObject => {
-      return SwaggerModule.createDocument(app, documentConfig, {
-        include: [PaymentModule],
-      });
-    };
-
-    SwaggerModule.setup('docs/payment', app, documentFactory);
+    SwaggerModule.setup('docs', app, document);
   }
 
   await app.register(fastifyCookie, {
@@ -85,7 +45,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
-  app.use(new ResponseMiddleware());
+  const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
+  app.useLogger(logger);
 
   const queueName = process.env.API_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
@@ -95,6 +56,7 @@ async function bootstrap() {
   const port = process.env.PORT;
   await app.listen(port, '0.0.0.0');
 
-  console.log(`queue name is ${queueName}`);
+  logger.log(`${appName} is running on ${port}`);
+  logger.log(`queue name is ${queueName}`);
 }
 bootstrap();
