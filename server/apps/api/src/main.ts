@@ -1,4 +1,5 @@
 import {
+  GrpcService,
   ResponseInterceptor,
   RmqService,
   UnauthorizedExceptionFilter,
@@ -6,7 +7,7 @@ import {
 import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { RmqOptions } from '@nestjs/microservices';
+import { GrpcOptions, RmqOptions } from '@nestjs/microservices';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -48,9 +49,18 @@ async function bootstrap() {
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
 
+  // queue
   const queueName = process.env.API_QUEUE;
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(queueName, true));
+
+  // grpc
+  const grpcService = app.get<GrpcService>(GrpcService);
+  app.connectMicroservice<GrpcOptions>(grpcService.getOptions('auth'));
+  // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Alert'));
+  // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Payment'));
+  // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Worker'));
+
   await app.startAllMicroservices();
 
   const port = process.env.PORT;

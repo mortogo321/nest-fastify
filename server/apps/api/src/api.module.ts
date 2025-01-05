@@ -1,6 +1,7 @@
 import {
   AuthenticatorModule,
   DatabaseModule,
+  GrpcModule,
   JwtGuard,
   LoggerMiddleware,
   RmqModule,
@@ -13,7 +14,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { WinstonModule } from 'nest-winston';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -24,6 +24,7 @@ import { UserModule } from './user/user.module';
     }),
     WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
     RmqModule.register({ name: process.env.API_QUEUE }),
+    GrpcModule.register({ name: 'auth' }),
     DatabaseModule,
     JwtModule.register({
       global: true,
@@ -31,7 +32,6 @@ import { UserModule } from './user/user.module';
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
     AuthenticatorModule,
-    UserModule,
   ],
   controllers: [ApiController],
   providers: [

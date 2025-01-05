@@ -4,6 +4,7 @@ export * from './decorators/';
 export * from './entities/';
 export * from './enums/';
 export * from './filters/';
+export * from './grpc/';
 export * from './interceptors/';
 export * from './logger/';
 export * from './middlewares/';
