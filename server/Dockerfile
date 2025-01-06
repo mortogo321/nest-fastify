@@ -2,7 +2,7 @@
 FROM node:alpine AS base
 
 RUN apk update
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 
 RUN yarn global add @nestjs/cli
 RUN yarn global add @dotenvx/dotenvx
