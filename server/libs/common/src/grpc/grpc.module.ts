@@ -22,7 +22,7 @@ export class GrpcModule {
               transport: Transport.GRPC,
               options: {
                 package: name.toUpperCase(),
-                protoPath: join(__dirname, `**/**/libs/proto/${name}.proto`),
+                protoPath: join(__dirname, `../../../proto/common/src/proto/${name}.proto`),
               },
             }),
           },

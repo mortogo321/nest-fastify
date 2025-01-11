@@ -15,6 +15,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { FacebookController } from './facebook/facebook.controller';
 import { GoogleController } from './google/google.controller';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GoogleController } from './google/google.controller';
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
     AuthenticatorModule,
+    UsersModule,
   ],
   controllers: [AuthController, GoogleController, FacebookController],
   providers: [
