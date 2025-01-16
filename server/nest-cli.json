@@ -6,11 +6,28 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/api/tsconfig.app.json"
+    "tsConfigPath": "apps/api/tsconfig.app.json",
+    "assets": [
+      {
+        "include": "libs/**/*.proto",
+        "outDir": "dist",
+        "watchAssets": true
+      }
+    ],
+    "watchAssets": true
   },
   "monorepo": true,
   "root": "apps/api",
   "projects": {
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
     "api": {
       "type": "application",
       "root": "apps/api",
@@ -38,7 +55,7 @@
         "assets": [
           {
             "include": "libs/**/*.proto",
-            "outDir": "dist/proto",
+            "outDir": "dist",
             "watchAssets": true
           }
         ],
@@ -48,28 +65,35 @@
     "alert": {
       "type": "application",
       "root": "apps/alert",
-      "entryFile": "main",
-      "sourceRoot": "apps/alert/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/alert/tsconfig.app.json"
-      }
-    },
-    "common": {
-      "type": "library",
-      "root": "libs/common",
-      "entryFile": "index",
-      "sourceRoot": "libs/common/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/common/tsconfig.lib.json"
+        "tsConfigPath": "apps/alert/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "libs/**/*.proto",
+            "outDir": "dist",
+            "watchAssets": true
+          }
+        ],
+        "watchAssets": true
       }
     },
     "payment": {
       "type": "application",
       "root": "apps/payment",
-      "entryFile": "main",
-      "sourceRoot": "apps/payment/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/payment/tsconfig.app.json"
+        "tsConfigPath": "apps/payment/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "libs/**/*.proto",
+            "outDir": "dist",
+            "watchAssets": true
+          }
+        ],
+        "watchAssets": true
       }
     },
     "worker": {
