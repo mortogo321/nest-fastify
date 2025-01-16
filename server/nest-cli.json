@@ -38,7 +38,7 @@
         "assets": [
           {
             "include": "libs/**/*.proto",
-            "outDir": "dist/proto",
+            "outDir": "dist",
             "watchAssets": true
           }
         ],
