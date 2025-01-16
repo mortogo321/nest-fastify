@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package USER;
+package nest.app;
+
+import "common.proto";
 
 service UsersService {
     rpc CreateUser (CreateUserDto) returns (User) {}
@@ -10,8 +12,6 @@ service UsersService {
     rpc RemoveUser (FindOneUserDto) returns (User) {}
     rpc QueryUsers (stream PaginationDto) returns (stream Users) {}
 }
-
-message Empty {};
 
 message CreateUserDto {
     string email = 1;

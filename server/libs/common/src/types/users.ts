@@ -2,22 +2,17 @@
 // versions:
 //   protoc-gen-ts_proto  v2.6.1
 //   protoc               v5.29.3
-// source: libs/proto/auth.proto
+// source: users.proto
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { Empty } from "./common";
 
-export const protobufPackage = "AUTH";
+export const protobufPackage = "nest.app";
 
-export interface Empty {
-}
-
-export interface SignUpDto {
-  email: string;
-  password: string;
-}
-
-export interface SignInDto {
+export interface CreateUserDto {
   email: string;
   password: string;
 }
@@ -52,55 +47,12 @@ export interface SocialMedia {
   twitterUri?: string | undefined;
 }
 
-function createBaseEmpty(): Empty {
-  return {};
-}
-
-export const Empty: MessageFns<Empty> = {
-  encode(_: Empty, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Empty {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEmpty();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): Empty {
-    return {};
-  },
-
-  toJSON(_: Empty): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Empty>, I>>(base?: I): Empty {
-    return Empty.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<Empty>, I>>(_: I): Empty {
-    const message = createBaseEmpty();
-    return message;
-  },
-};
-
-function createBaseSignUpDto(): SignUpDto {
+function createBaseCreateUserDto(): CreateUserDto {
   return { email: "", password: "" };
 }
 
-export const SignUpDto: MessageFns<SignUpDto> = {
-  encode(message: SignUpDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const CreateUserDto: MessageFns<CreateUserDto> = {
+  encode(message: CreateUserDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.email !== "") {
       writer.uint32(10).string(message.email);
     }
@@ -110,10 +62,10 @@ export const SignUpDto: MessageFns<SignUpDto> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): SignUpDto {
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateUserDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSignUpDto();
+    const message = createBaseCreateUserDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -142,14 +94,14 @@ export const SignUpDto: MessageFns<SignUpDto> = {
     return message;
   },
 
-  fromJSON(object: any): SignUpDto {
+  fromJSON(object: any): CreateUserDto {
     return {
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       password: isSet(object.password) ? globalThis.String(object.password) : "",
     };
   },
 
-  toJSON(message: SignUpDto): unknown {
+  toJSON(message: CreateUserDto): unknown {
     const obj: any = {};
     if (message.email !== "") {
       obj.email = message.email;
@@ -160,87 +112,11 @@ export const SignUpDto: MessageFns<SignUpDto> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SignUpDto>, I>>(base?: I): SignUpDto {
-    return SignUpDto.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CreateUserDto>, I>>(base?: I): CreateUserDto {
+    return CreateUserDto.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SignUpDto>, I>>(object: I): SignUpDto {
-    const message = createBaseSignUpDto();
-    message.email = object.email ?? "";
-    message.password = object.password ?? "";
-    return message;
-  },
-};
-
-function createBaseSignInDto(): SignInDto {
-  return { email: "", password: "" };
-}
-
-export const SignInDto: MessageFns<SignInDto> = {
-  encode(message: SignInDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.email !== "") {
-      writer.uint32(10).string(message.email);
-    }
-    if (message.password !== "") {
-      writer.uint32(18).string(message.password);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): SignInDto {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSignInDto();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.email = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.password = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SignInDto {
-    return {
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      password: isSet(object.password) ? globalThis.String(object.password) : "",
-    };
-  },
-
-  toJSON(message: SignInDto): unknown {
-    const obj: any = {};
-    if (message.email !== "") {
-      obj.email = message.email;
-    }
-    if (message.password !== "") {
-      obj.password = message.password;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SignInDto>, I>>(base?: I): SignInDto {
-    return SignInDto.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SignInDto>, I>>(object: I): SignInDto {
-    const message = createBaseSignInDto();
+  fromPartial<I extends Exact<DeepPartial<CreateUserDto>, I>>(object: I): CreateUserDto {
+    const message = createBaseCreateUserDto();
     message.email = object.email ?? "";
     message.password = object.password ?? "";
     return message;
@@ -703,44 +579,71 @@ export const SocialMedia: MessageFns<SocialMedia> = {
   },
 };
 
-export interface AuthService {
-  SignUp(request: SignUpDto): Promise<User>;
-  SignIn(request: SignInDto): Promise<Users>;
-  SignOut(request: FindOneUserDto): Promise<User>;
+export interface UsersService {
+  CreateUser(request: CreateUserDto): Promise<User>;
+  FindAllUsers(request: Empty): Promise<Users>;
+  FindOneUser(request: FindOneUserDto): Promise<User>;
+  UpdateUser(request: UpdateUserDto): Promise<User>;
+  RemoveUser(request: FindOneUserDto): Promise<User>;
+  QueryUsers(request: Observable<PaginationDto>): Observable<Users>;
 }
 
-export const AuthServiceServiceName = "AUTH.AuthService";
-export class AuthServiceClientImpl implements AuthService {
+export const UsersServiceServiceName = "nest.app.UsersService";
+export class UsersServiceClientImpl implements UsersService {
   private readonly rpc: Rpc;
   private readonly service: string;
   constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || AuthServiceServiceName;
+    this.service = opts?.service || UsersServiceServiceName;
     this.rpc = rpc;
-    this.SignUp = this.SignUp.bind(this);
-    this.SignIn = this.SignIn.bind(this);
-    this.SignOut = this.SignOut.bind(this);
+    this.CreateUser = this.CreateUser.bind(this);
+    this.FindAllUsers = this.FindAllUsers.bind(this);
+    this.FindOneUser = this.FindOneUser.bind(this);
+    this.UpdateUser = this.UpdateUser.bind(this);
+    this.RemoveUser = this.RemoveUser.bind(this);
+    this.QueryUsers = this.QueryUsers.bind(this);
   }
-  SignUp(request: SignUpDto): Promise<User> {
-    const data = SignUpDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignUp", data);
+  CreateUser(request: CreateUserDto): Promise<User> {
+    const data = CreateUserDto.encode(request).finish();
+    const promise = this.rpc.request(this.service, "CreateUser", data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
-  SignIn(request: SignInDto): Promise<Users> {
-    const data = SignInDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignIn", data);
+  FindAllUsers(request: Empty): Promise<Users> {
+    const data = Empty.encode(request).finish();
+    const promise = this.rpc.request(this.service, "FindAllUsers", data);
     return promise.then((data) => Users.decode(new BinaryReader(data)));
   }
 
-  SignOut(request: FindOneUserDto): Promise<User> {
+  FindOneUser(request: FindOneUserDto): Promise<User> {
     const data = FindOneUserDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignOut", data);
+    const promise = this.rpc.request(this.service, "FindOneUser", data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
+  }
+
+  UpdateUser(request: UpdateUserDto): Promise<User> {
+    const data = UpdateUserDto.encode(request).finish();
+    const promise = this.rpc.request(this.service, "UpdateUser", data);
+    return promise.then((data) => User.decode(new BinaryReader(data)));
+  }
+
+  RemoveUser(request: FindOneUserDto): Promise<User> {
+    const data = FindOneUserDto.encode(request).finish();
+    const promise = this.rpc.request(this.service, "RemoveUser", data);
+    return promise.then((data) => User.decode(new BinaryReader(data)));
+  }
+
+  QueryUsers(request: Observable<PaginationDto>): Observable<Users> {
+    const data = request.pipe(map((request) => PaginationDto.encode(request).finish()));
+    const result = this.rpc.bidirectionalStreamingRequest(this.service, "QueryUsers", data);
+    return result.pipe(map((data) => Users.decode(new BinaryReader(data))));
   }
 }
 
 interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  clientStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Promise<Uint8Array>;
+  serverStreamingRequest(service: string, method: string, data: Uint8Array): Observable<Uint8Array>;
+  bidirectionalStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Observable<Uint8Array>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;

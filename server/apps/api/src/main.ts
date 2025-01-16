@@ -56,7 +56,10 @@ async function bootstrap() {
 
   // grpc
   const grpcService = app.get<GrpcService>(GrpcService);
-  app.connectMicroservice<GrpcOptions>(grpcService.getOptions('auth'));
+  const grpcPackage = process.env.GRPC_PACKAGE;
+  app.connectMicroservice<GrpcOptions>(
+    grpcService.getOptions({ packageName: grpcPackage, name: 'auth' }),
+  );
   // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Alert'));
   // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Payment'));
   // app.connectMicroservice<GrpcOptions>(grpcService.getOptions('Worker'));

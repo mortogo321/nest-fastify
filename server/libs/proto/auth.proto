@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package AUTH;
+package nest.app;
+
+import "common.proto";
 
 service AuthService {
-    rpc SignUp (SignUpDto) returns (User) {}
-    rpc SignIn (SignInDto) returns (Users) {}
-    rpc SignOut (FindOneUserDto) returns (User) {}
+    rpc SignUp (SignUpDto) returns (Empty) {}
+    rpc SignIn (SignInDto) returns (Empty) {}
+    rpc SignOut (Empty) returns (Empty) {}
 }
-
-message Empty {};
 
 message SignUpDto {
     string email = 1;
@@ -20,32 +20,4 @@ message SignInDto {
     string password = 2;
 }
 
-message UpdateUserDto {
-    string id = 1;
-    SocialMedia socialMedia = 2;
-}
-
-message FindOneUserDto {
-    string id = 1;
-}
-
-message PaginationDto {
-    int32 page = 1;
-    int32 skip = 2;
-}
-
-message Users {
-    repeated User users = 1;
-}
-
-message User {
-    string id = 1;
-    string email = 2;
-    bool subscribed = 3;
-    SocialMedia socialMedia = 4;
-}
-
-message SocialMedia {
-    optional string facebookUri = 1;
-    optional string twitterUri = 2;
-}
+import "users.proto";

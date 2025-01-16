@@ -3,7 +3,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GrpcService } from './grpc.service';
 
-interface GrpcModuleOptions {
+export interface GrpcModuleOptions {
+  packageName: string;
   name: string;
 }
 
@@ -11,17 +12,17 @@ interface GrpcModuleOptions {
   providers: [GrpcService],
 })
 export class GrpcModule {
-  static register({ name }: GrpcModuleOptions): DynamicModule {
+  static register({ packageName, name }: GrpcModuleOptions): DynamicModule {
     return {
       module: GrpcModule,
       imports: [
         ClientsModule.registerAsync([
           {
-            name: `${name}_PACKAGE`,
+            name: `${packageName.replace('.', '_').toUpperCase()}_PACKAGE`,
             useFactory: () => ({
               transport: Transport.GRPC,
               options: {
-                package: name.toUpperCase(),
+                package: packageName,
                 protoPath: join(__dirname, '../../../proto', `${name}.proto`),
                 loader: {
                   includeDirs: [join(__dirname, '../../../proto', 'proto')],

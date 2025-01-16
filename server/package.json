@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./apps/api/test/jest-e2e.json",
     "prisma:dev": "dotenvx run -f .env.prisma -f .env.dev -- npx prisma",
     "prisma:prod": "dotenvx run -f .env.prisma -f .env.prod -- npx prisma",
-    "proto:generate": "protoc --ts_proto_out=. ./libs/proto/*.proto --ts_proto_opt=esModuleInterop=true"
+    "proto:generate": "protoc --ts_proto_out=./libs/common/src/types ./libs/proto/*.proto --ts_proto_opt=esModuleInterop=true --proto_path=./libs/proto"
   },
   "dependencies": {
     "@fastify/cookie": "9.4.0",

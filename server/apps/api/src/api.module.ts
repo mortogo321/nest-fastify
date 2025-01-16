@@ -24,7 +24,10 @@ import { ApiService } from './api.service';
     }),
     WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
     RmqModule.register({ name: process.env.API_QUEUE }),
-    GrpcModule.register({ name: 'auth' }),
+    GrpcModule.register({
+      packageName: process.env.GRPC_PACKAGE,
+      name: 'auth',
+    }),
     DatabaseModule,
     JwtModule.register({
       global: true,
