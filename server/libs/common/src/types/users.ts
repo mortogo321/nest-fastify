@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { Empty } from "./common";
+import { Empty, FindOneDto, PaginationDto } from "./common";
 
 export const protobufPackage = "nest.app";
 
@@ -20,15 +20,6 @@ export interface CreateUserDto {
 export interface UpdateUserDto {
   id: string;
   socialMedia: SocialMedia | undefined;
-}
-
-export interface FindOneUserDto {
-  id: string;
-}
-
-export interface PaginationDto {
-  page: number;
-  skip: number;
 }
 
 export interface Users {
@@ -197,140 +188,6 @@ export const UpdateUserDto: MessageFns<UpdateUserDto> = {
     message.socialMedia = (object.socialMedia !== undefined && object.socialMedia !== null)
       ? SocialMedia.fromPartial(object.socialMedia)
       : undefined;
-    return message;
-  },
-};
-
-function createBaseFindOneUserDto(): FindOneUserDto {
-  return { id: "" };
-}
-
-export const FindOneUserDto: MessageFns<FindOneUserDto> = {
-  encode(message: FindOneUserDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): FindOneUserDto {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFindOneUserDto();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): FindOneUserDto {
-    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
-  },
-
-  toJSON(message: FindOneUserDto): unknown {
-    const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<FindOneUserDto>, I>>(base?: I): FindOneUserDto {
-    return FindOneUserDto.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<FindOneUserDto>, I>>(object: I): FindOneUserDto {
-    const message = createBaseFindOneUserDto();
-    message.id = object.id ?? "";
-    return message;
-  },
-};
-
-function createBasePaginationDto(): PaginationDto {
-  return { page: 0, skip: 0 };
-}
-
-export const PaginationDto: MessageFns<PaginationDto> = {
-  encode(message: PaginationDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.page !== 0) {
-      writer.uint32(8).int32(message.page);
-    }
-    if (message.skip !== 0) {
-      writer.uint32(16).int32(message.skip);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): PaginationDto {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePaginationDto();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.page = reader.int32();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.skip = reader.int32();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PaginationDto {
-    return {
-      page: isSet(object.page) ? globalThis.Number(object.page) : 0,
-      skip: isSet(object.skip) ? globalThis.Number(object.skip) : 0,
-    };
-  },
-
-  toJSON(message: PaginationDto): unknown {
-    const obj: any = {};
-    if (message.page !== 0) {
-      obj.page = Math.round(message.page);
-    }
-    if (message.skip !== 0) {
-      obj.skip = Math.round(message.skip);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PaginationDto>, I>>(base?: I): PaginationDto {
-    return PaginationDto.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<PaginationDto>, I>>(object: I): PaginationDto {
-    const message = createBasePaginationDto();
-    message.page = object.page ?? 0;
-    message.skip = object.skip ?? 0;
     return message;
   },
 };
@@ -582,9 +439,9 @@ export const SocialMedia: MessageFns<SocialMedia> = {
 export interface UsersService {
   CreateUser(request: CreateUserDto): Promise<User>;
   FindAllUsers(request: Empty): Promise<Users>;
-  FindOneUser(request: FindOneUserDto): Promise<User>;
+  FindOneUser(request: FindOneDto): Promise<User>;
   UpdateUser(request: UpdateUserDto): Promise<User>;
-  RemoveUser(request: FindOneUserDto): Promise<User>;
+  RemoveUser(request: FindOneDto): Promise<User>;
   QueryUsers(request: Observable<PaginationDto>): Observable<Users>;
 }
 
@@ -614,8 +471,8 @@ export class UsersServiceClientImpl implements UsersService {
     return promise.then((data) => Users.decode(new BinaryReader(data)));
   }
 
-  FindOneUser(request: FindOneUserDto): Promise<User> {
-    const data = FindOneUserDto.encode(request).finish();
+  FindOneUser(request: FindOneDto): Promise<User> {
+    const data = FindOneDto.encode(request).finish();
     const promise = this.rpc.request(this.service, "FindOneUser", data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
@@ -626,8 +483,8 @@ export class UsersServiceClientImpl implements UsersService {
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
-  RemoveUser(request: FindOneUserDto): Promise<User> {
-    const data = FindOneUserDto.encode(request).finish();
+  RemoveUser(request: FindOneDto): Promise<User> {
+    const data = FindOneDto.encode(request).finish();
     const promise = this.rpc.request(this.service, "RemoveUser", data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }

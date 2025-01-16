@@ -3,3 +3,12 @@ syntax = "proto3";
 package nest.app;
 
 message Empty {};
+
+message FindOneDto {
+    string id = 1;
+}
+
+message PaginationDto {
+    int32 length = 1;
+    int32 start = 2;
+}

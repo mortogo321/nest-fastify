@@ -19,5 +19,3 @@ message SignInDto {
     string email = 1;
     string password = 2;
 }
-
-import "users.proto";
