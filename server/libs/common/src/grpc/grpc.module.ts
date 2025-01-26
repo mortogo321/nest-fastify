@@ -13,12 +13,14 @@ export interface GrpcModuleOptions {
 })
 export class GrpcModule {
   static register({ packageName, name }: GrpcModuleOptions): DynamicModule {
+    const clientName = `${packageName.replace('.', '_').replace('-', '_').toUpperCase()}_PACKAGE`;
+
     return {
       module: GrpcModule,
       imports: [
         ClientsModule.registerAsync([
           {
-            name: `${packageName.replace('.', '_').toUpperCase()}_PACKAGE`,
+            name: clientName,
             useFactory: () => ({
               transport: Transport.GRPC,
               options: {
