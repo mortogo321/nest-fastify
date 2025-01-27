@@ -17,6 +17,16 @@ export const HttpResponseSchema = {
   schema: { properties: response },
 };
 
+export const HttpResponsePaginationSchema = {
+  status: 200,
+  schema: {
+    properties: {
+      ...response,
+      total: { type: 'number', example: 1 },
+    },
+  },
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { data, ...badResponse } = response;
 
