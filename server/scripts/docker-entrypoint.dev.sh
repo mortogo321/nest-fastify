@@ -1,8 +1,15 @@
 #!/bin/sh
 
-# migrations
+# awaiting for DB
 while ! nc -z postgres 5432; do sleep 1; done;
+
 yarn prisma:dev generate
-yarn prisma:dev migrate dev
+
+# migration
+migrate=$(yarn prisma:dev migrate status)
+	
+if ! [[ "$migrate" =~ "Database schema is up to date!" ]]; then
+    yarn prisma:dev migrate dev
+fi
 
 exec "$@"
