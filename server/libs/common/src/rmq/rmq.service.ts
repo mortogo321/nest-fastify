@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
+import { type RmqContext, type RmqOptions, Transport } from '@nestjs/microservices';
+import { getRequiredEnv } from '../utils';
 
 @Injectable()
 export class RmqService {
@@ -7,8 +8,8 @@ export class RmqService {
     return {
       transport: Transport.RMQ,
       options: {
-        urls: [process.env.RABBIT_MQ_URI],
-        queue: process.env[`RABBIT_MQ_${queue}_QUEUE`],
+        urls: [getRequiredEnv('RABBITMQ_URI')],
+        queue: getRequiredEnv(`RABBIT_MQ_${queue}_QUEUE`),
         queueOptions: {
           durable: true,
         },

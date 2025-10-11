@@ -1,5 +1,6 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { type DynamicModule, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { getRequiredEnv } from '../utils';
 import { RmqService } from './rmq.service';
 
 interface RmqModuleOptions {
@@ -21,8 +22,8 @@ export class RmqModule {
             useFactory: () => ({
               transport: Transport.RMQ,
               options: {
-                urls: [process.env.RABBIT_MQ_URI],
-                queue: process.env[`RABBIT_MQ_${name}_QUEUE`],
+                urls: [getRequiredEnv('RABBITMQ_URI')],
+                queue: getRequiredEnv(`RABBIT_MQ_${name}_QUEUE`),
                 queueOptions: {
                   durable: true,
                 },

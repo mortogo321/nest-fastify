@@ -5,12 +5,12 @@
 // source: users.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { Empty, FindOneDto, PaginationDto } from "./common";
+import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Empty, FindOneDto, PaginationDto } from './common';
 
-export const protobufPackage = "nest.app";
+export const protobufPackage = 'nest.app';
 
 export interface CreateUserDto {
   email: string;
@@ -39,15 +39,15 @@ export interface SocialMedia {
 }
 
 function createBaseCreateUserDto(): CreateUserDto {
-  return { email: "", password: "" };
+  return { email: '', password: '' };
 }
 
 export const CreateUserDto: MessageFns<CreateUserDto> = {
   encode(message: CreateUserDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.email !== "") {
+    if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       writer.uint32(18).string(message.password);
     }
     return writer;
@@ -55,7 +55,7 @@ export const CreateUserDto: MessageFns<CreateUserDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): CreateUserDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateUserDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -87,17 +87,17 @@ export const CreateUserDto: MessageFns<CreateUserDto> = {
 
   fromJSON(object: any): CreateUserDto {
     return {
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      password: isSet(object.password) ? globalThis.String(object.password) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : '',
+      password: isSet(object.password) ? globalThis.String(object.password) : '',
     };
   },
 
   toJSON(message: CreateUserDto): unknown {
     const obj: any = {};
-    if (message.email !== "") {
+    if (message.email !== '') {
       obj.email = message.email;
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       obj.password = message.password;
     }
     return obj;
@@ -108,19 +108,19 @@ export const CreateUserDto: MessageFns<CreateUserDto> = {
   },
   fromPartial<I extends Exact<DeepPartial<CreateUserDto>, I>>(object: I): CreateUserDto {
     const message = createBaseCreateUserDto();
-    message.email = object.email ?? "";
-    message.password = object.password ?? "";
+    message.email = object.email ?? '';
+    message.password = object.password ?? '';
     return message;
   },
 };
 
 function createBaseUpdateUserDto(): UpdateUserDto {
-  return { id: "", socialMedia: undefined };
+  return { id: '', socialMedia: undefined };
 }
 
 export const UpdateUserDto: MessageFns<UpdateUserDto> = {
   encode(message: UpdateUserDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.socialMedia !== undefined) {
@@ -131,7 +131,7 @@ export const UpdateUserDto: MessageFns<UpdateUserDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateUserDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateUserDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -163,14 +163,14 @@ export const UpdateUserDto: MessageFns<UpdateUserDto> = {
 
   fromJSON(object: any): UpdateUserDto {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      id: isSet(object.id) ? globalThis.String(object.id) : '',
       socialMedia: isSet(object.socialMedia) ? SocialMedia.fromJSON(object.socialMedia) : undefined,
     };
   },
 
   toJSON(message: UpdateUserDto): unknown {
     const obj: any = {};
-    if (message.id !== "") {
+    if (message.id !== '') {
       obj.id = message.id;
     }
     if (message.socialMedia !== undefined) {
@@ -184,10 +184,11 @@ export const UpdateUserDto: MessageFns<UpdateUserDto> = {
   },
   fromPartial<I extends Exact<DeepPartial<UpdateUserDto>, I>>(object: I): UpdateUserDto {
     const message = createBaseUpdateUserDto();
-    message.id = object.id ?? "";
-    message.socialMedia = (object.socialMedia !== undefined && object.socialMedia !== null)
-      ? SocialMedia.fromPartial(object.socialMedia)
-      : undefined;
+    message.id = object.id ?? '';
+    message.socialMedia =
+      object.socialMedia !== undefined && object.socialMedia !== null
+        ? SocialMedia.fromPartial(object.socialMedia)
+        : undefined;
     return message;
   },
 };
@@ -206,7 +207,7 @@ export const Users: MessageFns<Users> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): Users {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUsers();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -229,7 +230,11 @@ export const Users: MessageFns<Users> = {
   },
 
   fromJSON(object: any): Users {
-    return { users: globalThis.Array.isArray(object?.users) ? object.users.map((e: any) => User.fromJSON(e)) : [] };
+    return {
+      users: globalThis.Array.isArray(object?.users)
+        ? object.users.map((e: any) => User.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: Users): unknown {
@@ -251,15 +256,15 @@ export const Users: MessageFns<Users> = {
 };
 
 function createBaseUser(): User {
-  return { id: "", email: "", subscribed: false, socialMedia: undefined };
+  return { id: '', email: '', subscribed: false, socialMedia: undefined };
 }
 
 export const User: MessageFns<User> = {
   encode(message: User, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.email !== "") {
+    if (message.email !== '') {
       writer.uint32(18).string(message.email);
     }
     if (message.subscribed !== false) {
@@ -273,7 +278,7 @@ export const User: MessageFns<User> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): User {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUser();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -321,8 +326,8 @@ export const User: MessageFns<User> = {
 
   fromJSON(object: any): User {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
+      id: isSet(object.id) ? globalThis.String(object.id) : '',
+      email: isSet(object.email) ? globalThis.String(object.email) : '',
       subscribed: isSet(object.subscribed) ? globalThis.Boolean(object.subscribed) : false,
       socialMedia: isSet(object.socialMedia) ? SocialMedia.fromJSON(object.socialMedia) : undefined,
     };
@@ -330,10 +335,10 @@ export const User: MessageFns<User> = {
 
   toJSON(message: User): unknown {
     const obj: any = {};
-    if (message.id !== "") {
+    if (message.id !== '') {
       obj.id = message.id;
     }
-    if (message.email !== "") {
+    if (message.email !== '') {
       obj.email = message.email;
     }
     if (message.subscribed !== false) {
@@ -350,12 +355,13 @@ export const User: MessageFns<User> = {
   },
   fromPartial<I extends Exact<DeepPartial<User>, I>>(object: I): User {
     const message = createBaseUser();
-    message.id = object.id ?? "";
-    message.email = object.email ?? "";
+    message.id = object.id ?? '';
+    message.email = object.email ?? '';
     message.subscribed = object.subscribed ?? false;
-    message.socialMedia = (object.socialMedia !== undefined && object.socialMedia !== null)
-      ? SocialMedia.fromPartial(object.socialMedia)
-      : undefined;
+    message.socialMedia =
+      object.socialMedia !== undefined && object.socialMedia !== null
+        ? SocialMedia.fromPartial(object.socialMedia)
+        : undefined;
     return message;
   },
 };
@@ -377,7 +383,7 @@ export const SocialMedia: MessageFns<SocialMedia> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): SocialMedia {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSocialMedia();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -445,7 +451,7 @@ export interface UsersService {
   QueryUsers(request: Observable<PaginationDto>): Observable<Users>;
 }
 
-export const UsersServiceServiceName = "nest.app.UsersService";
+export const UsersServiceServiceName = 'nest.app.UsersService';
 export class UsersServiceClientImpl implements UsersService {
   private readonly rpc: Rpc;
   private readonly service: string;
@@ -461,58 +467,71 @@ export class UsersServiceClientImpl implements UsersService {
   }
   CreateUser(request: CreateUserDto): Promise<User> {
     const data = CreateUserDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "CreateUser", data);
+    const promise = this.rpc.request(this.service, 'CreateUser', data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
   FindAllUsers(request: Empty): Promise<Users> {
     const data = Empty.encode(request).finish();
-    const promise = this.rpc.request(this.service, "FindAllUsers", data);
+    const promise = this.rpc.request(this.service, 'FindAllUsers', data);
     return promise.then((data) => Users.decode(new BinaryReader(data)));
   }
 
   FindOneUser(request: FindOneDto): Promise<User> {
     const data = FindOneDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "FindOneUser", data);
+    const promise = this.rpc.request(this.service, 'FindOneUser', data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
   UpdateUser(request: UpdateUserDto): Promise<User> {
     const data = UpdateUserDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "UpdateUser", data);
+    const promise = this.rpc.request(this.service, 'UpdateUser', data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
   RemoveUser(request: FindOneDto): Promise<User> {
     const data = FindOneDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "RemoveUser", data);
+    const promise = this.rpc.request(this.service, 'RemoveUser', data);
     return promise.then((data) => User.decode(new BinaryReader(data)));
   }
 
   QueryUsers(request: Observable<PaginationDto>): Observable<Users> {
     const data = request.pipe(map((request) => PaginationDto.encode(request).finish()));
-    const result = this.rpc.bidirectionalStreamingRequest(this.service, "QueryUsers", data);
+    const result = this.rpc.bidirectionalStreamingRequest(this.service, 'QueryUsers', data);
     return result.pipe(map((data) => Users.decode(new BinaryReader(data))));
   }
 }
 
 interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-  clientStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Promise<Uint8Array>;
+  clientStreamingRequest(
+    service: string,
+    method: string,
+    data: Observable<Uint8Array>,
+  ): Promise<Uint8Array>;
   serverStreamingRequest(service: string, method: string, data: Uint8Array): Observable<Uint8Array>;
-  bidirectionalStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Observable<Uint8Array>;
+  bidirectionalStreamingRequest(
+    service: string,
+    method: string,
+    data: Observable<Uint8Array>,
+  ): Observable<Uint8Array>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {

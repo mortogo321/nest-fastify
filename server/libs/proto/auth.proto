@@ -5,17 +5,60 @@ package nest.app;
 import "common.proto";
 
 service AuthService {
-    rpc SignUp (SignUpDto) returns (Empty) {}
-    rpc SignIn (SignInDto) returns (Empty) {}
-    rpc SignOut (Empty) returns (Empty) {}
+    rpc SignUp (SignUpRequest) returns (UserResponse) {}
+    rpc SignIn (SignInRequest) returns (TokenResponse) {}
+    rpc SignOut (SignOutRequest) returns (Empty) {}
+    rpc RefreshToken (RefreshTokenRequest) returns (TokenResponse) {}
+    rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse) {}
+    rpc GetProfile (GetProfileRequest) returns (UserResponse) {}
 }
 
-message SignUpDto {
+message SignUpRequest {
     string email = 1;
     string password = 2;
 }
 
-message SignInDto {
+message SignInRequest {
     string email = 1;
     string password = 2;
+}
+
+message SignOutRequest {
+    string userId = 1;
+    string refreshToken = 2;
+}
+
+message RefreshTokenRequest {
+    string refreshToken = 1;
+}
+
+message ValidateTokenRequest {
+    string accessToken = 1;
+}
+
+message GetProfileRequest {
+    string userId = 1;
+}
+
+message TokenResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+    string tokenType = 3;
+    int32 expiresIn = 4;
+}
+
+message UserResponse {
+    string id = 1;
+    string email = 2;
+    bool isActive = 3;
+    bool isVerified = 4;
+    string createdAt = 5;
+    string updatedAt = 6;
+}
+
+message ValidateTokenResponse {
+    bool valid = 1;
+    string userId = 2;
+    string email = 3;
+    string error = 4;
 }

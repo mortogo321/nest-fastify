@@ -5,12 +5,11 @@
 // source: common.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
 
-export const protobufPackage = "nest.app";
+export const protobufPackage = 'nest.app';
 
-export interface Empty {
-}
+export type Empty = {};
 
 export interface FindOneDto {
   id: string;
@@ -32,7 +31,7 @@ export const Empty: MessageFns<Empty> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): Empty {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEmpty();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -65,12 +64,12 @@ export const Empty: MessageFns<Empty> = {
 };
 
 function createBaseFindOneDto(): FindOneDto {
-  return { id: "" };
+  return { id: '' };
 }
 
 export const FindOneDto: MessageFns<FindOneDto> = {
   encode(message: FindOneDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     return writer;
@@ -78,7 +77,7 @@ export const FindOneDto: MessageFns<FindOneDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): FindOneDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFindOneDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -101,12 +100,12 @@ export const FindOneDto: MessageFns<FindOneDto> = {
   },
 
   fromJSON(object: any): FindOneDto {
-    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
+    return { id: isSet(object.id) ? globalThis.String(object.id) : '' };
   },
 
   toJSON(message: FindOneDto): unknown {
     const obj: any = {};
-    if (message.id !== "") {
+    if (message.id !== '') {
       obj.id = message.id;
     }
     return obj;
@@ -117,7 +116,7 @@ export const FindOneDto: MessageFns<FindOneDto> = {
   },
   fromPartial<I extends Exact<DeepPartial<FindOneDto>, I>>(object: I): FindOneDto {
     const message = createBaseFindOneDto();
-    message.id = object.id ?? "";
+    message.id = object.id ?? '';
     return message;
   },
 };
@@ -139,7 +138,7 @@ export const PaginationDto: MessageFns<PaginationDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): PaginationDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePaginationDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -200,14 +199,19 @@ export const PaginationDto: MessageFns<PaginationDto> = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {

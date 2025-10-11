@@ -1,15 +1,15 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { Injectable, Logger, type NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   private readonly logger = new Logger();
 
   use(req: any, res: any, next: () => void) {
-    const startTime = new Date().getTime();
+    const startTime = Date.now();
 
     res.on('finish', () => {
       const statusCode = res.statusCode;
-      const endTime = new Date().getTime();
+      const endTime = Date.now();
       const duration = endTime - startTime;
       const log = `[${req.method}] ${req.url} - ${statusCode} - ${duration}ms`;
 

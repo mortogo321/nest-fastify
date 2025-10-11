@@ -1,14 +1,14 @@
 import {
-  CallHandler,
-  ExecutionContext,
+  type CallHandler,
+  type ExecutionContext,
   HttpException,
   HttpStatus,
   Injectable,
-  NestInterceptor,
+  type NestInterceptor,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import type { Reflector } from '@nestjs/core';
 import { format } from 'date-fns';
-import { Observable, throwError } from 'rxjs';
+import { type Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { RESPONSE_MESSAGE_METADATA } from '../decorators';
 
@@ -25,15 +25,10 @@ export type Response<T> = {
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   constructor(private reflector: Reflector) {}
 
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<Response<T>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
     return next.handle().pipe(
       map((res: unknown) => this.responseHandler(res, context)),
-      catchError((err: HttpException) =>
-        throwError(() => this.errorHandler(err, context)),
-      ),
+      catchError((err: HttpException) => throwError(() => this.errorHandler(err, context))),
     );
   }
 
@@ -42,9 +37,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const exceptionResponse: any = exception.getResponse();
 
     response.status(status).send({
@@ -65,10 +58,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     const request = ctx.getRequest();
     const statusCode = response.statusCode;
     const message =
-      this.reflector.get<string>(
-        RESPONSE_MESSAGE_METADATA,
-        context.getHandler(),
-      ) || 'Success';
+      this.reflector.get<string>(RESPONSE_MESSAGE_METADATA, context.getHandler()) || 'Success';
 
     return {
       status: true,

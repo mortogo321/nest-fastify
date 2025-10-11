@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package nest.app;
+
+import "common.proto";
+
+service AlertService {
+    rpc SendEmail (SendEmailRequest) returns (SendEmailResponse) {}
+    rpc SendSMS (SendSMSRequest) returns (SendSMSResponse) {}
+    rpc SendPushNotification (SendPushRequest) returns (SendPushResponse) {}
+    rpc GetNotificationHistory (GetNotificationHistoryRequest) returns (NotificationHistoryResponse) {}
+}
+
+message SendEmailRequest {
+    string to = 1;
+    string subject = 2;
+    string body = 3;
+    string from = 4;
+    repeated string cc = 5;
+    repeated string bcc = 6;
+}
+
+message SendEmailResponse {
+    bool success = 1;
+    string messageId = 2;
+    string error = 3;
+}
+
+message SendSMSRequest {
+    string to = 1;
+    string message = 2;
+    string from = 3;
+}
+
+message SendSMSResponse {
+    bool success = 1;
+    string messageId = 2;
+    string error = 3;
+}
+
+message SendPushRequest {
+    string userId = 1;
+    string title = 2;
+    string body = 3;
+    string data = 4; // JSON string
+}
+
+message SendPushResponse {
+    bool success = 1;
+    string messageId = 2;
+    string error = 3;
+}
+
+message GetNotificationHistoryRequest {
+    string userId = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+
+message NotificationHistoryResponse {
+    repeated Notification notifications = 1;
+    int32 total = 2;
+}
+
+message Notification {
+    string id = 1;
+    string type = 2; // email, sms, push
+    string recipient = 3;
+    string subject = 4;
+    string status = 5;
+    string createdAt = 6;
+}

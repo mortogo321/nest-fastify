@@ -1,9 +1,16 @@
 model User {
-    id             String   @unique @default(uuid())
+    id             String   @id @default(uuid())
     email          String   @unique
     hashedPassword String
+    isActive       Boolean  @default(true)
+    isVerified     Boolean  @default(false)
     createdAt      DateTime @default(now())
     updatedAt      DateTime @updatedAt
 
-    roles Role[]
+    userRoles     UserRole[]
+    refreshTokens RefreshToken[]
+
+    @@index([email])
+    @@index([isActive, isVerified])
+    @@map("users")
 }

@@ -1,7 +1,7 @@
 import {
-  ArgumentsHost,
+  type ArgumentsHost,
   Catch,
-  ExceptionFilter,
+  type ExceptionFilter,
   UnauthorizedException,
 } from '@nestjs/common';
 import { format } from 'date-fns';

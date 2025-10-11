@@ -1,17 +1,17 @@
 import { Transform } from 'class-transformer';
 import { format } from 'date-fns';
-import { User } from '..';
+import type { User } from '..';
 
 export class Role {
-  id: string;
-  name: string;
-  description: string;
+  id!: string;
+  name!: string;
+  description!: string;
 
   @Transform(({ value }) => format(value, 'yyyy-MM-dd HH:mm:ss OOOO'))
-  createdAt: string;
+  createdAt!: string;
 
   @Transform(({ value }) => format(value, 'yyyy-MM-dd HH:mm:ss OOOO'))
-  updatedAt: string;
+  updatedAt!: string;
 
   user?: User;
   userId?: string;

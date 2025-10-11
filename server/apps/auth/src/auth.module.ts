@@ -1,12 +1,18 @@
 import {
+  AuditModule,
   AuthenticatorModule,
+  authEnvSchema,
   DatabaseModule,
+  getRequiredEnv,
+  HealthModule,
   JwtGuard,
   LoggerMiddleware,
+  RequestIdMiddleware,
   RmqModule,
+  validateEnv,
   winstonConfig,
 } from '@app/common';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { type MiddlewareConsumer, Module, type NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,6 +21,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { FacebookController } from './facebook/facebook.controller';
 import { GoogleController } from './google/google.controller';
+import { AuthGrpcController } from './grpc/auth-grpc.controller';
+import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -23,29 +31,34 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/auth/.env.app`,
       expandVariables: true,
+      validate: () => validateEnv(authEnvSchema),
     }),
     WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
-    RmqModule.register({ name: process.env.AUTH_QUEUE }),
+    RmqModule.register({ name: getRequiredEnv('AUTH_QUEUE') }),
     DatabaseModule,
+    AuditModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+      secret: getRequiredEnv('JWT_SECRET'),
+      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
     }),
     AuthenticatorModule,
+    HealthModule,
     UsersModule,
   ],
-  controllers: [AuthController, GoogleController, FacebookController],
+  controllers: [AuthController, GoogleController, FacebookController, AuthGrpcController],
   providers: [
     AuthService,
+    RefreshTokenService,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
   ],
+  exports: [RefreshTokenService],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(RequestIdMiddleware, LoggerMiddleware).forRoutes('*');
   }
 }

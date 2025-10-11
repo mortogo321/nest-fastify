@@ -5,10 +5,10 @@
 // source: auth.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Empty } from "./common";
+import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
+import { Empty } from './common';
 
-export const protobufPackage = "nest.app";
+export const protobufPackage = 'nest.app';
 
 export interface SignUpDto {
   email: string;
@@ -21,15 +21,15 @@ export interface SignInDto {
 }
 
 function createBaseSignUpDto(): SignUpDto {
-  return { email: "", password: "" };
+  return { email: '', password: '' };
 }
 
 export const SignUpDto: MessageFns<SignUpDto> = {
   encode(message: SignUpDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.email !== "") {
+    if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       writer.uint32(18).string(message.password);
     }
     return writer;
@@ -37,7 +37,7 @@ export const SignUpDto: MessageFns<SignUpDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): SignUpDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignUpDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -69,17 +69,17 @@ export const SignUpDto: MessageFns<SignUpDto> = {
 
   fromJSON(object: any): SignUpDto {
     return {
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      password: isSet(object.password) ? globalThis.String(object.password) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : '',
+      password: isSet(object.password) ? globalThis.String(object.password) : '',
     };
   },
 
   toJSON(message: SignUpDto): unknown {
     const obj: any = {};
-    if (message.email !== "") {
+    if (message.email !== '') {
       obj.email = message.email;
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       obj.password = message.password;
     }
     return obj;
@@ -90,22 +90,22 @@ export const SignUpDto: MessageFns<SignUpDto> = {
   },
   fromPartial<I extends Exact<DeepPartial<SignUpDto>, I>>(object: I): SignUpDto {
     const message = createBaseSignUpDto();
-    message.email = object.email ?? "";
-    message.password = object.password ?? "";
+    message.email = object.email ?? '';
+    message.password = object.password ?? '';
     return message;
   },
 };
 
 function createBaseSignInDto(): SignInDto {
-  return { email: "", password: "" };
+  return { email: '', password: '' };
 }
 
 export const SignInDto: MessageFns<SignInDto> = {
   encode(message: SignInDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.email !== "") {
+    if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       writer.uint32(18).string(message.password);
     }
     return writer;
@@ -113,7 +113,7 @@ export const SignInDto: MessageFns<SignInDto> = {
 
   decode(input: BinaryReader | Uint8Array, length?: number): SignInDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
+    const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignInDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -145,17 +145,17 @@ export const SignInDto: MessageFns<SignInDto> = {
 
   fromJSON(object: any): SignInDto {
     return {
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      password: isSet(object.password) ? globalThis.String(object.password) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : '',
+      password: isSet(object.password) ? globalThis.String(object.password) : '',
     };
   },
 
   toJSON(message: SignInDto): unknown {
     const obj: any = {};
-    if (message.email !== "") {
+    if (message.email !== '') {
       obj.email = message.email;
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       obj.password = message.password;
     }
     return obj;
@@ -166,8 +166,8 @@ export const SignInDto: MessageFns<SignInDto> = {
   },
   fromPartial<I extends Exact<DeepPartial<SignInDto>, I>>(object: I): SignInDto {
     const message = createBaseSignInDto();
-    message.email = object.email ?? "";
-    message.password = object.password ?? "";
+    message.email = object.email ?? '';
+    message.password = object.password ?? '';
     return message;
   },
 };
@@ -178,7 +178,7 @@ export interface AuthService {
   SignOut(request: Empty): Promise<Empty>;
 }
 
-export const AuthServiceServiceName = "nest.app.AuthService";
+export const AuthServiceServiceName = 'nest.app.AuthService';
 export class AuthServiceClientImpl implements AuthService {
   private readonly rpc: Rpc;
   private readonly service: string;
@@ -191,19 +191,19 @@ export class AuthServiceClientImpl implements AuthService {
   }
   SignUp(request: SignUpDto): Promise<Empty> {
     const data = SignUpDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignUp", data);
+    const promise = this.rpc.request(this.service, 'SignUp', data);
     return promise.then((data) => Empty.decode(new BinaryReader(data)));
   }
 
   SignIn(request: SignInDto): Promise<Empty> {
     const data = SignInDto.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignIn", data);
+    const promise = this.rpc.request(this.service, 'SignIn', data);
     return promise.then((data) => Empty.decode(new BinaryReader(data)));
   }
 
   SignOut(request: Empty): Promise<Empty> {
     const data = Empty.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SignOut", data);
+    const promise = this.rpc.request(this.service, 'SignOut', data);
     return promise.then((data) => Empty.decode(new BinaryReader(data)));
   }
 }
@@ -214,14 +214,19 @@ interface Rpc {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {

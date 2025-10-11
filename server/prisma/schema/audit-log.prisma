@@ -1,0 +1,38 @@
+model AuditLog {
+  id        String   @id @default(uuid())
+
+  // Request information
+  requestId String
+  method    String   // GET, POST, PUT, DELETE, etc.
+  path      String   // Request path
+  query     String?  // Query parameters (JSON)
+  body      String?  // Request body (JSON, sanitized)
+
+  // User information
+  userId    String?  // User ID if authenticated
+  userEmail String?  // User email if authenticated
+  ip        String   // IP address
+  userAgent String?  // User agent
+
+  // Response information
+  statusCode Int     // HTTP status code
+  response   String? // Response body (JSON, truncated if too large)
+
+  // Timing
+  duration   Int     // Request duration in milliseconds
+
+  // Additional metadata
+  service    String  // Service name (api, auth, etc.)
+  version    String? // API version
+  error      String? // Error message if request failed
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([requestId])
+  @@index([method, path])
+  @@index([createdAt])
+  @@index([statusCode])
+  @@map("audit_logs")
+}

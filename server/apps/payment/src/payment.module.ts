@@ -1,12 +1,16 @@
 import {
   AuthenticatorModule,
   DatabaseModule,
+  getRequiredEnv,
+  HealthModule,
   JwtGuard,
   LoggerMiddleware,
+  paymentEnvSchema,
   RmqModule,
+  validateEnv,
   winstonConfig,
 } from '@app/common';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { type MiddlewareConsumer, Module, type NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,16 +24,18 @@ import { PaymentService } from './payment.service';
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/payment/.env.app`,
       expandVariables: true,
+      validate: () => validateEnv(paymentEnvSchema),
     }),
     WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
-    RmqModule.register({ name: process.env.PAYMENT_QUEUE }),
+    RmqModule.register({ name: getRequiredEnv('PAYMENT_QUEUE') }),
     DatabaseModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+      secret: getRequiredEnv('JWT_SECRET'),
+      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
     }),
     AuthenticatorModule,
+    HealthModule,
   ],
   controllers: [PaymentController],
   providers: [
@@ -40,7 +46,7 @@ import { PaymentService } from './payment.service';
     },
   ],
 })
-export class PaymentModule  implements NestModule {
+export class PaymentModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }

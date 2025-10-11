@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package nest.app;
+
+import "common.proto";
+
+service WorkerService {
+    rpc CreateJob (CreateJobRequest) returns (JobResponse) {}
+    rpc GetJob (GetJobRequest) returns (JobResponse) {}
+    rpc ListJobs (ListJobsRequest) returns (JobsResponse) {}
+    rpc CancelJob (CancelJobRequest) returns (JobResponse) {}
+    rpc RetryJob (RetryJobRequest) returns (JobResponse) {}
+    rpc GetJobStats (Empty) returns (JobStatsResponse) {}
+}
+
+message CreateJobRequest {
+    string type = 1; // Job type: email, data_processing, etc.
+    string payload = 2; // JSON string
+    int32 priority = 3; // 1-10, higher is more important
+    string scheduledAt = 4; // Optional: ISO date string for delayed jobs
+    int32 maxRetries = 5;
+}
+
+message JobResponse {
+    string id = 1;
+    string type = 2;
+    string status = 3; // pending, processing, completed, failed, canceled
+    string payload = 4;
+    int32 priority = 5;
+    int32 attempts = 6;
+    int32 maxRetries = 7;
+    string error = 8;
+    string createdAt = 9;
+    string updatedAt = 10;
+    string completedAt = 11;
+}
+
+message GetJobRequest {
+    string id = 1;
+}
+
+message ListJobsRequest {
+    string type = 1; // Optional filter
+    string status = 2; // Optional filter
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message JobsResponse {
+    repeated JobResponse jobs = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message CancelJobRequest {
+    string id = 1;
+}
+
+message RetryJobRequest {
+    string id = 1;
+}
+
+message JobStatsResponse {
+    int32 totalJobs = 1;
+    int32 pendingJobs = 2;
+    int32 processingJobs = 3;
+    int32 completedJobs = 4;
+    int32 failedJobs = 5;
+    int32 canceledJobs = 6;
+}

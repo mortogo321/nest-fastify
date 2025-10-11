@@ -1,13 +1,14 @@
 import { IS_PUBLIC_KEY } from '@app/common';
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest } from 'fastify';
+import type { Reflector } from '@nestjs/core';
+import type { JwtService } from '@nestjs/jwt';
+import type { FastifyRequest } from 'fastify';
+import { getRequiredEnv } from '../../utils';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -35,10 +36,10 @@ export class JwtGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
+        secret: getRequiredEnv('JWT_SECRET'),
       });
 
-      request['user'] = payload;
+      request.user = payload;
     } catch {
       throw new UnauthorizedException();
     }
@@ -48,7 +49,8 @@ export class JwtGuard implements CanActivate {
 
   private extractTokenFromHeader(request: FastifyRequest): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    const cookieToken = request.cookies?.[process.env.JWT_COOKIES] ?? '';
+    const cookieName = getRequiredEnv('JWT_COOKIES');
+    const cookieToken = request.cookies?.[cookieName] ?? '';
 
     if (cookieToken) {
       return cookieToken;

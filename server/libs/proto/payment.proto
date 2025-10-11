@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package nest.app;
+
+import "common.proto";
+
+service PaymentService {
+    rpc CreatePayment (CreatePaymentRequest) returns (PaymentResponse) {}
+    rpc GetPayment (GetPaymentRequest) returns (PaymentResponse) {}
+    rpc ListPayments (ListPaymentsRequest) returns (PaymentsResponse) {}
+    rpc RefundPayment (RefundPaymentRequest) returns (RefundResponse) {}
+    rpc VerifyPayment (VerifyPaymentRequest) returns (VerifyPaymentResponse) {}
+}
+
+message CreatePaymentRequest {
+    string userId = 1;
+    int64 amount = 2; // Amount in cents
+    string currency = 3;
+    string paymentMethod = 4; // card, bank_transfer, etc.
+    string description = 5;
+    string metadata = 6; // JSON string
+}
+
+message PaymentResponse {
+    string id = 1;
+    string userId = 2;
+    int64 amount = 3;
+    string currency = 4;
+    string status = 5; // pending, succeeded, failed, canceled
+    string paymentMethod = 6;
+    string description = 7;
+    string createdAt = 8;
+    string updatedAt = 9;
+}
+
+message GetPaymentRequest {
+    string id = 1;
+}
+
+message ListPaymentsRequest {
+    string userId = 1;
+    int32 page = 2;
+    int32 limit = 3;
+    string status = 4; // Optional filter
+}
+
+message PaymentsResponse {
+    repeated PaymentResponse payments = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message RefundPaymentRequest {
+    string paymentId = 1;
+    int64 amount = 2; // Optional partial refund amount
+    string reason = 3;
+}
+
+message RefundResponse {
+    string id = 1;
+    string paymentId = 2;
+    int64 amount = 3;
+    string status = 4;
+    string createdAt = 5;
+}
+
+message VerifyPaymentRequest {
+    string paymentId = 1;
+    string verificationCode = 2;
+}
+
+message VerifyPaymentResponse {
+    bool verified = 1;
+    string status = 2;
+    string error = 3;
+}

@@ -1,40 +1,41 @@
 import {
-    ResponseInterceptor,
-    RmqService,
-    UnauthorizedExceptionFilter
+  getEnv,
+  getEnvNumber,
+  getRequiredEnv,
+  isDevelopment,
+  ResponseInterceptor,
+  RmqService,
+  UnauthorizedExceptionFilter,
 } from '@app/common';
 import fastifyCookie from '@fastify/cookie';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { RmqOptions } from '@nestjs/microservices';
-import {
-    FastifyAdapter,
-    NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import type { RmqOptions } from '@nestjs/microservices';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { WorkerModule } from './worker.module';
 
 async function bootstrap() {
-  const appName = process.env.APP_NAME;
-  const appUrl = process.env.APP_URL;
-  const app = await NestFactory.create<NestFastifyApplication>(
-    WorkerModule,
-    new FastifyAdapter(),
-  );
-  const documentConfig = new DocumentBuilder()
-    .setTitle(`${appName} Service`)
-    .setDescription(`${appName} Service API description`)
-    .setVersion('1.0')
-    .addTag(appName)
-    .addServer(appUrl)
-    .build();
-  const document = SwaggerModule.createDocument(app, documentConfig);
+  const appName = getEnv('APP_NAME', 'Worker');
+  const appUrl = getEnv('APP_URL', 'http://localhost:3004');
+  const app = await NestFactory.create<NestFastifyApplication>(WorkerModule, new FastifyAdapter());
 
-  SwaggerModule.setup('docs', app, document);
+  if (isDevelopment()) {
+    const documentConfig = new DocumentBuilder()
+      .setTitle(`${appName} Service`)
+      .setDescription(`${appName} Service API description`)
+      .setVersion('1.0')
+      .addTag(appName)
+      .addServer(appUrl)
+      .build();
+    const document = SwaggerModule.createDocument(app, documentConfig);
+
+    SwaggerModule.setup('docs', app, document);
+  }
 
   await app.register(fastifyCookie, {
-    secret: process.env.JWT_SECRET,
+    secret: getRequiredEnv('JWT_SECRET'),
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
@@ -45,12 +46,12 @@ async function bootstrap() {
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
 
-  const queueName = process.env.WORKER_QUEUE;
+  const queueName = getRequiredEnv('WORKER_QUEUE');
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(queueName, true));
   await app.startAllMicroservices();
 
-  const port = process.env.PORT;
+  const port = getEnvNumber('PORT', 3004);
   await app.listen(port, '0.0.0.0');
 
   logger.log(`${appName} is running on ${port}`);

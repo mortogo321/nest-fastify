@@ -1,13 +1,17 @@
 import {
   AuthenticatorModule,
+  apiEnvSchema,
   DatabaseModule,
   GrpcModule,
+  getRequiredEnv,
+  HealthModule,
   JwtGuard,
   LoggerMiddleware,
   RmqModule,
+  validateEnv,
   winstonConfig,
 } from '@app/common';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { type MiddlewareConsumer, Module, type NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -21,20 +25,22 @@ import { ApiService } from './api.service';
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/api/.env.app`,
       expandVariables: true,
+      validate: () => validateEnv(apiEnvSchema),
     }),
     WinstonModule.forRootAsync({ useFactory: () => winstonConfig }),
-    RmqModule.register({ name: process.env.API_QUEUE }),
+    RmqModule.register({ name: getRequiredEnv('API_QUEUE') }),
     GrpcModule.register({
-      packageName: process.env.GRPC_PACKAGE,
+      packageName: getRequiredEnv('GRPC_PACKAGE'),
       name: 'auth',
     }),
     DatabaseModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+      secret: getRequiredEnv('JWT_SECRET'),
+      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
     }),
     AuthenticatorModule,
+    HealthModule,
   ],
   controllers: [ApiController],
   providers: [
