@@ -3,8 +3,8 @@
 A production-ready microservices architecture built with NestJS, Fastify, gRPC, and RabbitMQ.
 
 ## Tech Stack
-- **Framework**: NestJS 10.x
-- **HTTP Server**: Fastify (high-performance)
+- **Framework**: NestJS 11
+- **HTTP Server**: Fastify
 - **Database**: PostgreSQL 16 + Prisma ORM
 - **Message Broker**: RabbitMQ 3.13
 - **gRPC**: Inter-service communication
@@ -311,13 +311,6 @@ eventBus.subscribe('user-registered', myHandler, EventPriority.HIGH);
 - Helmet security headers
 - Input validation
 - Sanitized audit logs
-
-## Performance
-- **Fastify**: 2x faster than Express
-- **pnpm**: Faster installs, less disk space
-- **Biome**: 10-100x faster linting/formatting
-- **gRPC**: High-performance RPC
-- **Connection pooling**: Efficient database connections
 
 ## Troubleshooting
 
