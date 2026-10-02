@@ -1,22 +1,22 @@
-import { Test, type TestingModule } from '@nestjs/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
 
 describe('PaymentController', () => {
   let paymentController: PaymentController;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [PaymentController],
-      providers: [PaymentService],
-    }).compile();
-
-    paymentController = app.get<PaymentController>(PaymentController);
+  beforeEach(() => {
+    process.env.APP_NAME = 'Payment';
+    paymentController = new PaymentController(new PaymentService());
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(paymentController.getHello()).toBe('Hello World!');
+    it('should return a greeting from the payment service', () => {
+      expect(paymentController.getHello()).toBe('Hello from Payment!');
+    });
+
+    it('should be defined', () => {
+      expect(paymentController).toBeDefined();
     });
   });
 });

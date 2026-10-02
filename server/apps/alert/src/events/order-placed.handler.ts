@@ -59,7 +59,7 @@ export class OrderPlacedEventHandler implements EventHandler<OrderPlacedEventDat
     // 4. Include customer support contact info
 
     const itemsList = data.items
-      .map((item) => `- ${item.name} x${item.quantity}: ${item.currency}${item.price.toFixed(2)}`)
+      .map((item) => `- ${item.name} x${item.quantity}: ${data.currency}${item.price.toFixed(2)}`)
       .join('\n');
 
     const emailContent = {

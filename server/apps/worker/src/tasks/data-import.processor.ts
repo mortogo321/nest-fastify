@@ -63,7 +63,7 @@ export class DataImportProcessor implements TaskProcessor<DataImportData> {
     }
   }
 
-  async onCompleted(job: Job<DataImportData>, result: JobResult): Promise<void> {
+  async onCompleted(job: Job<DataImportData>): Promise<void> {
     this.logger.log(`Data import job ${job.id} completed`);
     // Send notification to user with import results
   }

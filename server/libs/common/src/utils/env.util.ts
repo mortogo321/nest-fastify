@@ -24,6 +24,21 @@ export function getRequiredEnv(key: string): string {
 }
 
 /**
+ * Get JWT expiration value typed for @nestjs/jwt signOptions.
+ * Accepts a duration string ("1h", "7d") or seconds ("3600").
+ * Throws if the variable is not set and no default is given.
+ */
+export function getJwtExpiresIn(
+  key = 'JWT_EXPIRATION',
+  defaultValue?: string,
+): NonNullable<import('@nestjs/jwt').JwtSignOptions['expiresIn']> {
+  const value = defaultValue === undefined ? getRequiredEnv(key) : getEnv(key, defaultValue);
+  const asNumber = Number(value);
+  const parsed = Number.isNaN(asNumber) ? value : asNumber;
+  return parsed as NonNullable<import('@nestjs/jwt').JwtSignOptions['expiresIn']>;
+}
+
+/**
  * Get environment variable as number
  * @param key - Environment variable key
  * @param defaultValue - Default value if not set or invalid

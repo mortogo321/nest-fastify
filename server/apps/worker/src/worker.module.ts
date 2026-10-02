@@ -1,7 +1,7 @@
 import {
   AuthenticatorModule,
   DatabaseModule,
-  getEnv,
+  getJwtExpiresIn,
   getRequiredEnv,
   HealthModule,
   JwtGuard,
@@ -37,7 +37,7 @@ import { WorkerService } from './worker.service';
     JwtModule.register({
       global: true,
       secret: getRequiredEnv('JWT_SECRET'),
-      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
+      signOptions: { expiresIn: getJwtExpiresIn() },
     }),
     AuthenticatorModule,
     HealthModule,

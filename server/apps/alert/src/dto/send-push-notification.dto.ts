@@ -8,7 +8,7 @@ export class SendPushNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  to: string;
+  to!: string;
 
   @ApiProperty({
     description: 'Notification title',
@@ -16,7 +16,7 @@ export class SendPushNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @ApiProperty({
     description: 'Notification body',
@@ -24,7 +24,7 @@ export class SendPushNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  body: string;
+  body!: string;
 
   @ApiProperty({
     description: 'Additional data payload',

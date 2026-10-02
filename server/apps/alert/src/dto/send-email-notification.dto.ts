@@ -8,7 +8,7 @@ export class SendEmailNotificationDto {
   })
   @IsEmail()
   @IsNotEmpty()
-  to: string;
+  to!: string;
 
   @ApiProperty({
     description: 'Email subject',
@@ -16,7 +16,7 @@ export class SendEmailNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  subject: string;
+  subject!: string;
 
   @ApiProperty({
     description: 'Email body content',
@@ -24,7 +24,7 @@ export class SendEmailNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  body: string;
+  body!: string;
 
   @ApiProperty({
     description: 'Sender email address',

@@ -1,3 +1,26 @@
 **/.DS_Store
 
 **/.env.app
+
+# dependencies / build
+**/node_modules/
+**/dist/
+**/build/
+**/coverage/
+
+# logs
+*.log
+logs/
+
+# local env overrides (keep .env.dev/.env.prod tracked as defaults)
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

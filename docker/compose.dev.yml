@@ -1,114 +1,133 @@
 name: nest-app
 
+x-service-base: &service-base
+  build:
+    context: ../server
+    dockerfile: Dockerfile
+    target: development
+  restart: unless-stopped
+  env_file:
+    - ../server/.env.dev
+
 services:
   api:
+    <<: *service-base
     container_name: api
-    build:
-      context: ..
-      dockerfile: server/Dockerfile
-      target: dev
-    command: ["sh", "-c", "pnpm start:dev"]
-    restart: unless-stopped
+    command: ["bun", "run", "start:dev", "api"]
     ports:
       - 8000:8000
-    env_file:
-      - ../server/.env.dev
     volumes:
       - ../server:/app
+      - /app/node_modules
+      - /app/dist
       - ../server/apps/api/.env.dev:/app/apps/api/.env.app
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   auth:
+    <<: *service-base
     container_name: auth
-    build:
-      context: ..
-      dockerfile: server/Dockerfile
-      target: dev
-    command: ["sh", "-c", "pnpm start:dev auth"]
-    restart: unless-stopped
+    command: ["bun", "run", "start:dev", "auth"]
     ports:
       - 8001:8001
-    env_file:
-      - ../server/.env.dev
     volumes:
       - ../server:/app
+      - /app/node_modules
+      - /app/dist
       - ../server/apps/auth/.env.dev:/app/apps/auth/.env.app
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   alert:
+    <<: *service-base
     container_name: alert
-    build:
-      context: ..
-      dockerfile: server/Dockerfile
-      target: dev
-    command: ["sh", "-c", "pnpm start:dev alert"]
-    restart: unless-stopped
+    command: ["bun", "run", "start:dev", "alert"]
     ports:
       - 8002:8002
-    env_file:
-      - ../server/.env.dev
     volumes:
       - ../server:/app
+      - /app/node_modules
+      - /app/dist
       - ../server/apps/alert/.env.dev:/app/apps/alert/.env.app
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8002/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   payment:
+    <<: *service-base
     container_name: payment
-    build:
-      context: ..
-      dockerfile: server/Dockerfile
-      target: dev
-    command: ["sh", "-c", "pnpm start:dev payment"]
-    restart: unless-stopped
+    command: ["bun", "run", "start:dev", "payment"]
     ports:
       - 8003:8003
-    env_file:
-      - ../server/.env.dev
     volumes:
       - ../server:/app
+      - /app/node_modules
+      - /app/dist
       - ../server/apps/payment/.env.dev:/app/apps/payment/.env.app
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8003/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   worker:
+    <<: *service-base
     container_name: worker
-    build:
-      context: ..
-      dockerfile: server/Dockerfile
-      target: dev
-    command: ["sh", "-c", "pnpm start:dev worker"]
-    restart: unless-stopped
+    command: ["bun", "run", "start:dev", "worker"]
     ports:
       - 9000:9000
-    env_file:
-      - ../server/.env.dev
     volumes:
       - ../server:/app
+      - /app/node_modules
+      - /app/dist
       - ../server/apps/worker/.env.dev:/app/apps/worker/.env.app
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   postgres:
     container_name: postgres
-    image: postgres:16.4-alpine
+    image: postgres:17.6-alpine
     restart: unless-stopped
     ports:
       - 5432:5432
@@ -117,30 +136,33 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3-management
+    image: rabbitmq:4.3.5-management-alpine
     restart: unless-stopped
     ports:
       - 15672:15672
       - 5672:5672
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
-      interval: 3s
-      timeout: 3s
+      interval: 5s
+      timeout: 5s
       retries: 10
     env_file:
       - ../server/.env.dev
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
-  mailhog:
-    container_name: mailhog
-    image: mailhog/mailhog
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:v1.30
     restart: unless-stopped
-    logging:
-      driver: "none"
     ports:
       - 1025:1025
       - 8025:8025

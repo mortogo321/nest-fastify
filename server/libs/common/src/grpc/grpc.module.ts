@@ -1,7 +1,7 @@
 import { type DynamicModule, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
 import { GrpcService } from './grpc.service';
+import { resolveProtoDir, resolveProtoPath } from './proto-path.util';
 
 export interface GrpcModuleOptions {
   packageName: string;
@@ -25,9 +25,9 @@ export class GrpcModule {
               transport: Transport.GRPC,
               options: {
                 package: packageName,
-                protoPath: join(__dirname, '../../../proto', `${name}.proto`),
+                protoPath: resolveProtoPath(name),
                 loader: {
-                  includeDirs: [join(__dirname, '../../../proto', 'proto')],
+                  includeDirs: [resolveProtoDir()],
                 },
               },
             }),

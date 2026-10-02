@@ -4,7 +4,7 @@ import {
   DatabaseModule,
   EventBusService,
   EventPriority,
-  getEnv,
+  getJwtExpiresIn,
   getRequiredEnv,
   HealthModule,
   JwtGuard,
@@ -45,7 +45,7 @@ import {
     JwtModule.register({
       global: true,
       secret: getRequiredEnv('JWT_SECRET'),
-      signOptions: { expiresIn: getEnv('JWT_EXPIRATION', '1h') },
+      signOptions: { expiresIn: getJwtExpiresIn('JWT_EXPIRATION', '1h') },
     }),
     AuthenticatorModule,
     HealthModule,

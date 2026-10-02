@@ -3,6 +3,7 @@ import {
   apiEnvSchema,
   DatabaseModule,
   GrpcModule,
+  getJwtExpiresIn,
   getRequiredEnv,
   HealthModule,
   JwtGuard,
@@ -37,7 +38,7 @@ import { ApiService } from './api.service';
     JwtModule.register({
       global: true,
       secret: getRequiredEnv('JWT_SECRET'),
-      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
+      signOptions: { expiresIn: getJwtExpiresIn() },
     }),
     AuthenticatorModule,
     HealthModule,

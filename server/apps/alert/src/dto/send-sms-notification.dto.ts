@@ -11,7 +11,7 @@ export class SendSmsNotificationDto {
   @Matches(/^\+[1-9]\d{1,14}$/, {
     message: 'Phone number must be in E.164 format (e.g., +14155552671)',
   })
-  to: string;
+  to!: string;
 
   @ApiProperty({
     description: 'SMS message content',
@@ -19,7 +19,7 @@ export class SendSmsNotificationDto {
   })
   @IsString()
   @IsNotEmpty()
-  message: string;
+  message!: string;
 
   @ApiProperty({
     description: 'Additional metadata',

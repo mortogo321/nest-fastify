@@ -8,7 +8,7 @@ export class CreateEmailJobDto {
   })
   @IsEmail()
   @IsNotEmpty()
-  to: string;
+  to!: string;
 
   @ApiProperty({
     description: 'Email subject',
@@ -16,7 +16,7 @@ export class CreateEmailJobDto {
   })
   @IsString()
   @IsNotEmpty()
-  subject: string;
+  subject!: string;
 
   @ApiProperty({
     description: 'Email body content',
@@ -24,7 +24,7 @@ export class CreateEmailJobDto {
   })
   @IsString()
   @IsNotEmpty()
-  body: string;
+  body!: string;
 
   @ApiProperty({
     description: 'Email sender address',

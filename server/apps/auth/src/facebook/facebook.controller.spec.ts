@@ -1,18 +1,13 @@
-import { Test, type TestingModule } from '@nestjs/testing';
+import { describe, expect, it } from 'vitest';
 import { FacebookController } from './facebook.controller';
 
 describe('FacebookController', () => {
-  let controller: FacebookController;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [FacebookController],
-    }).compile();
-
-    controller = module.get<FacebookController>(FacebookController);
+  it('should report the OAuth service as ready', () => {
+    const controller = new FacebookController();
+    expect(controller.getHello()).toBe('Facebook OAuth Service Ready');
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(new FacebookController()).toBeDefined();
   });
 });

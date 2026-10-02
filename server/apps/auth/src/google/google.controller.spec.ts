@@ -1,18 +1,13 @@
-import { Test, type TestingModule } from '@nestjs/testing';
+import { describe, expect, it } from 'vitest';
 import { GoogleController } from './google.controller';
 
 describe('GoogleController', () => {
-  let controller: GoogleController;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [GoogleController],
-    }).compile();
-
-    controller = module.get<GoogleController>(GoogleController);
+  it('should report the OAuth service as ready', () => {
+    const controller = new GoogleController();
+    expect(controller.getHello()).toBe('Google OAuth Service Ready');
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(new GoogleController()).toBeDefined();
   });
 });

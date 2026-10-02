@@ -1,22 +1,22 @@
-import { Test, type TestingModule } from '@nestjs/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 
 describe('ApiController', () => {
   let apiController: ApiController;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [ApiController],
-      providers: [ApiService],
-    }).compile();
-
-    apiController = app.get<ApiController>(ApiController);
+  beforeEach(() => {
+    process.env.APP_NAME = 'API';
+    apiController = new ApiController(new ApiService());
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(apiController.getHello()).toBe('Hello World!');
+    it('should return a greeting from the API gateway', () => {
+      expect(apiController.getHello()).toBe('Hello from API!');
+    });
+
+    it('should be defined', () => {
+      expect(apiController).toBeDefined();
     });
   });
 });

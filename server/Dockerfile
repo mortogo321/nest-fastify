@@ -1,122 +1,45 @@
-# ============================================
-# Stage 1: Base - Common dependencies
-# ============================================
-FROM node:20-alpine AS base
+# nest-fastify — multi-service NestJS API (bun-first, pinned runtimes)
+# Build context: server/
+#
+# Targets: development (hot reload) | production (lean node runtime).
+# One image serves all five microservices; compose overrides CMD per service:
+#   node dist/apps/<api|auth|alert|payment|worker>/main.js
+# Prisma Client is generated in the builder stage; production reuses the
+# builder's node_modules wholesale so the generated client is always present.
 
-# Install system dependencies
-RUN apk update && \
-    apk add --no-cache \
-    libc6-compat \
-    openssl \
-    netcat-openbsd \
-    && rm -rf /var/cache/apk/*
-
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# Install global tools
-RUN pnpm add -g @nestjs/cli@^10.4.8 @dotenvx/dotenvx
-
-# Set working directory
+# --- deps: install with bun ---
+FROM oven/bun:1.4.2-alpine AS deps
 WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-# ============================================
-# Stage 2: Dependencies - Install all dependencies
-# ============================================
-FROM base AS dependencies
-
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
-# Install all dependencies (including dev dependencies for build)
-RUN pnpm install --frozen-lockfile
-
-# ============================================
-# Stage 3: Builder - Build the application
-# ============================================
-FROM base AS builder
-
-# Copy dependencies from previous stage
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Copy source code
+# --- development: hot reload via nest --watch ---
+FROM oven/bun:1.4.2-alpine AS development
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+EXPOSE 8000 8001 8002 8003 9000
+CMD ["bun", "run", "start:dev"]
 
-# Generate Prisma Client
-RUN pnpm prisma:prod generate
-
-# Build the application
-RUN pnpm build
-
-# ============================================
-# Stage 4: Production Dependencies - Install only production dependencies
-# ============================================
-FROM base AS production-dependencies
-
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod && \
-    pnpm store prune
-
-# ============================================
-# Stage 5: Development - For local development with hot reload
-# ============================================
-FROM base AS development
-
-# Copy dependencies
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Copy source code
+# --- builder: generate Prisma Client + compile all services ---
+FROM oven/bun:1.4.2-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# `prisma generate` needs DATABASE_URL only for interpolation, no DB connection.
+RUN bun run prisma:generate:prod && bun run build:all
 
-# Expose ports for all services
-EXPOSE 3000 3001 3002 3003 3004
-
-# Set entrypoint
-ENTRYPOINT ["sh", "scripts/docker-entrypoint.dev.sh"]
-
-CMD ["pnpm", "start:dev"]
-
-# ============================================
-# Stage 6: Production - Optimized production image
-# ============================================
-FROM base AS production
-
-# Set NODE_ENV
+# --- production: minimal node runtime, non-root ---
+FROM node:26.10-alpine AS production
+WORKDIR /app
 ENV NODE_ENV=production
-
-# Create non-root user for security
+COPY package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
-
-# Copy production dependencies
-COPY --from=production-dependencies --chown=nestjs:nodejs /app/node_modules ./node_modules
-
-# Copy built application
-COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-
-# Copy necessary files for runtime
-COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nestjs:nodejs /app/scripts ./scripts
-COPY --from=builder --chown=nestjs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nestjs:nodejs /app/.env.* ./
-
-# Generate Prisma Client in production
-RUN pnpm prisma:prod generate
-
-# Switch to non-root user
+    adduser -S nestjs -u 1001 && \
+    chown -R nestjs:nodejs /app
 USER nestjs
-
-# Expose ports for all services
-EXPOSE 3000 3001 3002 3003 3004
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-# Set entrypoint
-ENTRYPOINT ["sh", "scripts/docker-entrypoint.prod.sh"]
-
-CMD ["node", "dist/apps/api/main"]
+EXPOSE 8000 8001 8002 8003 9000
+# Per-service healthchecks live in compose (ports differ per service).
+CMD ["node", "dist/apps/api/main.js"]

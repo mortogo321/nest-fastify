@@ -1,6 +1,7 @@
 import {
   AuthenticatorModule,
   DatabaseModule,
+  getJwtExpiresIn,
   getRequiredEnv,
   HealthModule,
   JwtGuard,
@@ -32,7 +33,7 @@ import { PaymentService } from './payment.service';
     JwtModule.register({
       global: true,
       secret: getRequiredEnv('JWT_SECRET'),
-      signOptions: { expiresIn: getRequiredEnv('JWT_EXPIRATION') },
+      signOptions: { expiresIn: getJwtExpiresIn() },
     }),
     AuthenticatorModule,
     HealthModule,

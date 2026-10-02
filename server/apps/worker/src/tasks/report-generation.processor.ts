@@ -66,7 +66,7 @@ export class ReportGenerationProcessor implements TaskProcessor<ReportGeneration
     }
   }
 
-  async onCompleted(job: Job<ReportGenerationData>, result: JobResult): Promise<void> {
+  async onCompleted(job: Job<ReportGenerationData>): Promise<void> {
     this.logger.log(`Report generation job ${job.id} completed successfully`);
     // Here you could send a notification to the user
   }

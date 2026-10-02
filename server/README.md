@@ -8,14 +8,15 @@ A production-ready microservices architecture built with NestJS, Fastify, gRPC, 
 
 ## Tech Stack
 
-- **Framework**: NestJS 10.x
+- **Framework**: NestJS 12.x (strict TypeScript, `noUncheckedIndexedAccess`)
 - **HTTP Server**: Fastify (high-performance alternative to Express)
-- **Database**: PostgreSQL + Prisma ORM
-- **Message Broker**: RabbitMQ
+- **Database**: PostgreSQL 17 + Prisma ORM 6.19
+- **Message Broker**: RabbitMQ 4.3
 - **gRPC**: Inter-service communication
-- **Authentication**: JWT with refresh tokens
-- **Package Manager**: pnpm (fast, disk-efficient)
-- **Linting/Formatting**: Biome (10-100x faster than ESLint)
+- **Authentication**: JWT with refresh tokens (Argon2)
+- **Package Manager**: Bun 1.4.2 (bun-first, `bun.lock` committed)
+- **Linting/Formatting**: Biome 2.5 (owns lint; no ESLint)
+- **Tests**: Vitest 5 (unit) + e2e config requiring live postgres/rabbitmq
 - **Monorepo**: NestJS CLI workspaces
 
 ## Project Structure
@@ -37,22 +38,22 @@ server/
 
 ## Prerequisites
 
-- Node.js 20+
-- pnpm 9+
+- Node.js 22+ (prod runtime `node:26.10-alpine`)
+- Bun 1.4.2+
 - Docker & Docker Compose
-- PostgreSQL 16
-- RabbitMQ 3.13
+- PostgreSQL 17
+- RabbitMQ 4.3
 
 ## Getting Started
 
 ### 1. Install Dependencies
 
 ```bash
-# Install pnpm (if not already installed)
-npm install -g pnpm
+# Install Bun (if not already installed)
+curl -fsSL https://bun.sh/install | bash
 
 # Install project dependencies
-pnpm install
+bun install
 ```
 
 ### 2. Environment Setup
@@ -74,10 +75,10 @@ Edit `.env.dev` and `.env.prisma` with your configuration.
 docker-compose up -d postgres
 
 # Run migrations
-pnpm prisma:dev migrate dev
+bun prisma:dev migrate dev
 
 # Generate Prisma Client
-pnpm prisma:dev generate
+bun prisma:dev generate
 ```
 
 ### 4. Start Services
@@ -89,14 +90,14 @@ pnpm prisma:dev generate
 docker-compose up -d postgres rabbitmq
 
 # Start all services
-pnpm start:dev
+bun start:dev
 
 # Or start individual services
-pnpm start:dev api
-pnpm start:dev auth
-pnpm start:dev alert
-pnpm start:dev payment
-pnpm start:dev worker
+bun start:dev api
+bun start:dev auth
+bun start:dev alert
+bun start:dev payment
+bun start:dev worker
 ```
 
 #### Docker Development
@@ -117,36 +118,36 @@ docker compose -f docker/compose.prod.yml up -d
 
 ### Development
 
-- `pnpm start:dev` - Start all services in development mode
-- `pnpm start:dev <service>` - Start specific service
-- `pnpm build` - Build all services
-- `pnpm build <service>` - Build specific service
+- `bun start:dev` - Start all services in development mode
+- `bun start:dev <service>` - Start specific service
+- `bun build` - Build all services
+- `bun build <service>` - Build specific service
 
 ### Code Quality
 
-- `pnpm lint` - Run Biome linter
-- `pnpm lint:fix` - Fix linting issues
-- `pnpm format` - Format code with Biome
-- `pnpm format:check` - Check code formatting
-- `pnpm check` - Run lint + format (with auto-fix)
-- `pnpm ci:check` - CI mode (no auto-fix)
-- `pnpm typecheck` - Run TypeScript type checking
-- `pnpm validate` - Run typecheck + lint + format
+- `bun lint` - Run Biome linter
+- `bun lint:fix` - Fix linting issues
+- `bun format` - Format code with Biome
+- `bun format:check` - Check code formatting
+- `bun check` - Run lint + format (with auto-fix)
+- `bun ci:check` - CI mode (no auto-fix)
+- `bun typecheck` - Run TypeScript type checking
+- `bun validate` - Run typecheck + lint + format
 
 ### Database
 
-- `pnpm prisma:dev <command>` - Run Prisma CLI for development
-- `pnpm prisma:prod <command>` - Run Prisma CLI for production
-- `pnpm prisma:dev migrate dev` - Create and apply migrations
-- `pnpm prisma:dev generate` - Generate Prisma Client
-- `pnpm prisma:dev studio` - Open Prisma Studio
+- `bun prisma:dev <command>` - Run Prisma CLI for development
+- `bun prisma:prod <command>` - Run Prisma CLI for production
+- `bun prisma:dev migrate dev` - Create and apply migrations
+- `bun prisma:dev generate` - Generate Prisma Client
+- `bun prisma:dev studio` - Open Prisma Studio
 
 ### Testing
 
-- `pnpm test` - Run unit tests
-- `pnpm test:watch` - Run tests in watch mode
-- `pnpm test:cov` - Run tests with coverage
-- `pnpm test:e2e` - Run e2e tests
+- `bun test` - Run unit tests
+- `bun test:watch` - Run tests in watch mode
+- `bun test:cov` - Run tests with coverage
+- `bun test:e2e` - Run e2e tests
 
 ## Services Overview
 
@@ -388,14 +389,14 @@ This project uses [Biome](https://biomejs.dev) for linting and formatting. Biome
 
 ```bash
 # Format and lint with auto-fix
-pnpm check
+bun check
 
 # Check only (no auto-fix)
-pnpm format:check
-pnpm lint
+bun format:check
+bun lint
 
 # Run in CI mode
-pnpm ci:check
+bun ci:check
 ```
 
 **Configuration**: See `biome.json`
@@ -406,7 +407,7 @@ Strict TypeScript configuration for type safety.
 
 ```bash
 # Check types
-pnpm typecheck
+bun typecheck
 ```
 
 ## Docker Support
@@ -533,7 +534,7 @@ Access at `http://localhost:15672`
 ## Performance Optimizations
 
 - **Fastify**: 2x faster than Express
-- **pnpm**: Faster installs, less disk space
+- **bun**: Faster installs, less disk space
 - **Biome**: 10-100x faster than ESLint/Prettier
 - **gRPC**: High-performance service communication
 - **Connection pooling**: Prisma connection management
@@ -565,28 +566,28 @@ docker compose -f docker/compose.dev.yml restart postgres
 ### Prisma Issues
 ```bash
 # Reset database (WARNING: deletes all data)
-pnpm prisma:dev migrate reset
+bun prisma:dev migrate reset
 
 # Regenerate Prisma Client
-pnpm prisma:dev generate
+bun prisma:dev generate
 ```
 
-### pnpm Issues
+### bun Issues
 ```bash
-# Clear pnpm cache
-pnpm store prune
+# Clear bun cache
+bun store prune
 
 # Reinstall dependencies
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
+rm -rf node_modules bun-lock.yaml
+bun install
 ```
 
 ## Contributing
 
 1. Create a feature branch
 2. Make your changes
-3. Run `pnpm validate` to ensure code quality
-4. Run `pnpm test` to ensure tests pass
+3. Run `bun validate` to ensure code quality
+4. Run `bun test` to ensure tests pass
 5. Commit with descriptive messages
 6. Create a pull request
 

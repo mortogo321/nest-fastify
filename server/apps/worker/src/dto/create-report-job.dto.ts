@@ -21,7 +21,7 @@ export class CreateReportJobDto {
   })
   @IsEnum(ReportType)
   @IsNotEmpty()
-  reportType: ReportType;
+  reportType!: ReportType;
 
   @ApiProperty({
     description: 'Report start date',
@@ -29,7 +29,7 @@ export class CreateReportJobDto {
   })
   @IsDateString()
   @IsNotEmpty()
-  startDate: string;
+  startDate!: string;
 
   @ApiProperty({
     description: 'Report end date',
@@ -37,7 +37,7 @@ export class CreateReportJobDto {
   })
   @IsDateString()
   @IsNotEmpty()
-  endDate: string;
+  endDate!: string;
 
   @ApiProperty({
     description: 'Output format',
@@ -46,7 +46,7 @@ export class CreateReportJobDto {
   })
   @IsEnum(ReportFormat)
   @IsNotEmpty()
-  format: ReportFormat;
+  format!: ReportFormat;
 
   @ApiProperty({
     description: 'User ID requesting the report',
@@ -54,5 +54,5 @@ export class CreateReportJobDto {
   })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userId!: string;
 }

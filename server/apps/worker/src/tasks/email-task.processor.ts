@@ -50,7 +50,7 @@ export class EmailTaskProcessor implements TaskProcessor<EmailTaskData> {
     }
   }
 
-  async onCompleted(job: Job<EmailTaskData>, result: JobResult): Promise<void> {
+  async onCompleted(job: Job<EmailTaskData>): Promise<void> {
     this.logger.log(`Email job ${job.id} completed successfully`);
   }
 

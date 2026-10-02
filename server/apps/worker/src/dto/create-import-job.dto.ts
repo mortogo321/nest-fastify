@@ -14,7 +14,7 @@ export class CreateImportJobDto {
   })
   @IsUrl()
   @IsNotEmpty()
-  fileUrl: string;
+  fileUrl!: string;
 
   @ApiProperty({
     description: 'Type of data to import',
@@ -23,7 +23,7 @@ export class CreateImportJobDto {
   })
   @IsEnum(ImportType)
   @IsNotEmpty()
-  type: ImportType;
+  type!: ImportType;
 
   @ApiProperty({
     description: 'User ID initiating the import',
@@ -31,5 +31,5 @@ export class CreateImportJobDto {
   })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userId!: string;
 }

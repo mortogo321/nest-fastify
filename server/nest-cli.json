@@ -5,16 +5,7 @@
   "entryFile": "src/main",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/api/tsconfig.app.json",
-    "assets": [
-      {
-        "include": "libs/**/*.proto",
-        "outDir": "dist",
-        "watchAssets": true
-      }
-    ],
-    "watchAssets": true
+    "tsConfigPath": "apps/api/tsconfig.app.json"
   },
   "monorepo": true,
   "root": "apps/api",
@@ -34,15 +25,7 @@
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/api/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "libs/**/*.proto",
-            "outDir": "dist",
-            "watchAssets": true
-          }
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
     "auth": {
@@ -51,15 +34,7 @@
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "libs/**/*.proto",
-            "outDir": "dist",
-            "watchAssets": true
-          }
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
     "alert": {
@@ -68,15 +43,7 @@
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/alert/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "libs/**/*.proto",
-            "outDir": "dist",
-            "watchAssets": true
-          }
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/alert/tsconfig.app.json"
       }
     },
     "payment": {
@@ -85,15 +52,7 @@
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/payment/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "libs/**/*.proto",
-            "outDir": "dist",
-            "watchAssets": true
-          }
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/payment/tsconfig.app.json"
       }
     },
     "worker": {

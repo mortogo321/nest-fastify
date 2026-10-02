@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type GrpcOptions, Transport } from '@nestjs/microservices';
-import { join } from 'path';
 import type { GrpcModuleOptions } from './grpc.module';
+import { resolveProtoDir, resolveProtoPath } from './proto-path.util';
 
 // Define gRPC port mappings for services
 const GRPC_PORTS: Record<string, number> = {
@@ -21,7 +21,7 @@ export class GrpcService {
       transport: Transport.GRPC,
       options: {
         package: packageName,
-        protoPath: join(__dirname, '../../../proto', `${name}.proto`),
+        protoPath: resolveProtoPath(name),
         url: `0.0.0.0:${port}`,
         loader: {
           keepCase: true,
@@ -29,6 +29,7 @@ export class GrpcService {
           enums: String,
           defaults: true,
           oneofs: true,
+          includeDirs: [resolveProtoDir()],
         },
       },
     };
@@ -48,7 +49,7 @@ export class GrpcService {
       transport: Transport.GRPC,
       options: {
         package: packageName,
-        protoPath: join(__dirname, '../../../proto', `${name}.proto`),
+        protoPath: resolveProtoPath(name),
         url: `${host}:${port}`,
         loader: {
           keepCase: true,
@@ -56,6 +57,7 @@ export class GrpcService {
           enums: String,
           defaults: true,
           oneofs: true,
+          includeDirs: [resolveProtoDir()],
         },
       },
     };
